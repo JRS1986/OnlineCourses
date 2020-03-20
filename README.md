@@ -1,5 +1,5 @@
-# Online Courses
-A list to centralize good sources for online courses.  
+# Free Online Courses
+A list to centralize excellent free online courses.  
 If you want to participate, please do so and send me a pull request :)
 
 ## Table of Content

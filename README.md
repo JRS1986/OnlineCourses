@@ -4,6 +4,7 @@ If you want to participate, please do so and send me a pull request :)
 
 ## Table of Content
 1. [AI](#ai)  
+   * [Tools](#ai-tools)
 2. [Data Science and Statistics](#data-science-and-statistics)  
 3. [Computer Science](#computer-science)  
 4. [Optimization](#optimization)  
@@ -20,8 +21,11 @@ If you want to participate, please do so and send me a pull request :)
 * [DeepLearning.AI](https://www.deeplearning.ai/ "DeepLearning.AI"): Andrew Ng's Deep Learning specialization course.  
 * [Math for AI](https://www.coursera.org/specializations/mathematics-machine-learning): You all know, I'm a mathematician... So, of yourse I will bring up this course.  
 * [Probabilistic Graphical Models](https://www.coursera.org/specializations/probabilistic-graphical-models): Probabilistic graphical models (PGMs) are a rich framework for encoding probability distributions over complex domains: joint (multivariate) distributions over large numbers of random variables that interact with each other. These representations sit at the intersection of statistics and computer science, relying on concepts from probability theory, graph algorithms, machine learning, and more.  
-* [Recommender Systems](https://www.coursera.org/specializations/recommender-systems): A Recommender System is a process that seeks to predict user preferences.  
-* [Introduction to TensorFlow for Artificial Intelligence, Machine Learning, and Deep Learning](https://www.coursera.org/learn/introduction-tensorflow)  
+* [Recommender Systems](https://www.coursera.org/specializations/recommender-systems): A Recommender System is a process that seeks to predict user preferences.    
+#### AI Tools
+* [Introduction to TensorFlow for Artificial Intelligence, Machine Learning, and Deep Learning](https://www.coursera.org/learn/introduction-tensorflow)
+* [Deep Neural Networks with PyTorch](https://www.coursera.org/learn/deep-neural-networks-with-pytorch)
+* [Practical Machine Learning on H2O](https://www.coursera.org/learn/machine-learning-h2o)
 
 ### Data Science and Statistics
 * [Data Science Overview](https://www.coursera.org/specializations/jhu-data-science)  

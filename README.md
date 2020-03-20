@@ -24,7 +24,7 @@ If you want to participate, please do so and send me a pull request :)
 * [Introduction to TensorFlow for Artificial Intelligence, Machine Learning, and Deep Learning](https://www.coursera.org/learn/introduction-tensorflow)  
 
 ### Data Science and Statistics
-* [Specialization](https://www.coursera.org/specializations/jhu-data-science)  
+* [Data Science Overview](https://www.coursera.org/specializations/jhu-data-science)  
 * [Applied Data Science with Python](https://www.coursera.org/specializations/data-science-python)  
 * [Statistics with R](https://www.coursera.org/specializations/statistics)  
 * [Bayesian statistics](https://www.coursera.org/learn/bayesian-statistics): An introduction to Bayesian and classical statistics.  

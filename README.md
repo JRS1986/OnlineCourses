@@ -9,6 +9,11 @@ If you want to participate, please do so and send me a pull request :)
 4. [Optimization](#optimization)  
 5. [Web Development](#web-development)  
 6. [Software Development](#software-development)  
+7. [Cloud](#cloud)
+8. [Business](#business)
+   * [Innovation](#innovation)
+   * [HR](#hr)
+   * [Sales](#sales)
 
 ### AI
 * [AwesomeAI](https://github.com/hades217/awesome-ai): A very nice summary about AI courses, that I will just add some things to.  
@@ -41,5 +46,27 @@ If you want to participate, please do so and send me a pull request :)
 * [Python for Everybody](https://www.coursera.org/specializations/python)  
 * [Functional Programming in Scala](https://www.coursera.org/specializations/scala)  
 * [Blockchain](https://www.coursera.org/specializations/blockchain)  
+
+### Cloud
+* [Cloud Computing](https://www.coursera.org/specializations/cloud-computing)
+* [AWS Online Trainings](https://www.aws.training/)
+* [Azure Online Trainings](https://docs.microsoft.com/en-us/learn/)
+* [Google Cloud Trainings](https://cloud.google.com/training)
+
+### Business
+* [Business Foundations](https://www.coursera.org/specializations/wharton-business-foundations)
+* [Project Management Principles and Practices](https://www.coursera.org/specializations/project-management)
+* [Supply Chain Management](https://www.coursera.org/specializations/supply-chain-management)
+* [Effective Communication: Writing, Design, and Presentation](https://www.coursera.org/specializations/effective-business-communication)
+* [Career Success](https://www.coursera.org/specializations/career-success)
+* [Six Sigma Green Belt](https://www.coursera.org/specializations/six-sigma-green-belt)
+* [Business Strategy](https://www.coursera.org/specializations/business-strategy)
+#### Innovation
+* [Strategic Management and Innovation](https://www.coursera.org/specializations/strategic-management)
+* [Innovation Management](https://www.coursera.org/learn/innovation-management)
+#### HR
+* [Human Resource Management: HR for People Managers](https://www.coursera.org/specializations/human-resource-management)
+#### Sales
+* [Strategic Sales Management](https://www.coursera.org/specializations/sales-management-bridging-gap-strategy-sales)
 
 

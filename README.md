@@ -1,4 +1,4 @@
-# OnlineCourses
+# Online Courses
 A list to centralize good sources for online courses.  
 If you want to participate, please do so and send me a pull request :)
 

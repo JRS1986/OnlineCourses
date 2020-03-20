@@ -15,6 +15,10 @@ If you want to participate, please do so and send me a pull request :)
    * [Innovation](#innovation)
    * [HR](#hr)
    * [Sales](#sales)
+   * [Marketing](#marketing)
+   * [Leadership](#leadership)
+   * [Digital Transformation](#digital-transformation)
+9. [Various](#various)
 
 ### AI
 * [AwesomeAI](https://github.com/hades217/awesome-ai): A very nice summary about AI courses, that I will just add some things to.  
@@ -50,6 +54,7 @@ If you want to participate, please do so and send me a pull request :)
 * [Python for Everybody](https://www.coursera.org/specializations/python)  
 * [Functional Programming in Scala](https://www.coursera.org/specializations/scala)  
 * [Blockchain](https://www.coursera.org/specializations/blockchain)  
+* [Google IT Automation with Python](https://www.coursera.org/professional-certificates/google-it-automation)
 
 ### Cloud
 * [Cloud Computing](https://www.coursera.org/specializations/cloud-computing)
@@ -68,9 +73,23 @@ If you want to participate, please do so and send me a pull request :)
 #### Innovation
 * [Strategic Management and Innovation](https://www.coursera.org/specializations/strategic-management)
 * [Innovation Management](https://www.coursera.org/learn/innovation-management)
+* [Strategic Innovation: Building and Sustaining Innovative Organizations](https://www.coursera.org/learn/strategic-innovation-building-and-sustaining-innovative-organizations)
+* [Strategic Innovation: Managing Innovation Initiatives](https://www.coursera.org/learn/strategic-innovation-innovation-at-the-frontier)
 #### HR
 * [Human Resource Management: HR for People Managers](https://www.coursera.org/specializations/human-resource-management)
 #### Sales
 * [Strategic Sales Management](https://www.coursera.org/specializations/sales-management-bridging-gap-strategy-sales)
+* [Pricing Strategy Optimization](https://www.coursera.org/specializations/uva-darden-bcg-pricing-strategy)
+#### Marketing
+* [Digital Marketing](https://www.coursera.org/specializations/digital-marketing)
+* [Search Engine Optimization (SEO)](https://www.coursera.org/specializations/seo)
+* [Social Media Marketing](https://www.coursera.org/specializations/social-media-marketing)
+#### Leadership
+* [Inspired Leadership](https://www.coursera.org/specializations/inspired-leadership)
+#### Digital Transformation
+* [Digital Transformation](https://www.coursera.org/learn/bcg-uva-darden-digital-transformation)
+
+### Various
+* [The Science of Well-Being](https://www.coursera.org/learn/the-science-of-well-being)
 
 

@@ -23,7 +23,7 @@ If you want to participate, please do so and send me a pull request :)
 ### AI
 * [AwesomeAI](https://github.com/hades217/awesome-ai): A very nice summary about AI courses, that I will just add some things to.  
 * [DeepLearning.AI](https://www.deeplearning.ai/ "DeepLearning.AI"): Andrew Ng's Deep Learning specialization course.  
-* [Fast AI Course] (https://course.fast.ai/)
+* [Fast AI Course](https://course.fast.ai/)
 * [Math for AI](https://www.coursera.org/specializations/mathematics-machine-learning): You all know, I'm a mathematician... So, of yourse I will bring up this course.  
 * [Probabilistic Graphical Models](https://www.coursera.org/specializations/probabilistic-graphical-models): Probabilistic graphical models (PGMs) are a rich framework for encoding probability distributions over complex domains: joint (multivariate) distributions over large numbers of random variables that interact with each other. These representations sit at the intersection of statistics and computer science, relying on concepts from probability theory, graph algorithms, machine learning, and more.  
 * [Recommender Systems](https://www.coursera.org/specializations/recommender-systems): A Recommender System is a process that seeks to predict user preferences.    

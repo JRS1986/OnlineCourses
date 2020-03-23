@@ -60,6 +60,7 @@ If you want to participate, please do so and send me a pull request :)
 ### Cloud
 * [Cloud Computing](https://www.coursera.org/specializations/cloud-computing)
 * [AWS Online Trainings](https://www.aws.training/)
+   * [AWS Docs](https://docs.aws.amazon.com/)
 * [Azure Online Trainings](https://docs.microsoft.com/en-us/learn/)
 * [Google Cloud Trainings](https://cloud.google.com/training)
 

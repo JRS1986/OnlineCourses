@@ -3,6 +3,7 @@ A list to centralize excellent free online courses.
 If you want to participate, please do so and send me a pull request :)
 
 ## Table of Content
+0. [Covid-19 special offers](#covid-19-special)
 1. [AI](#ai)  
    * [Tools](#ai-tools)
 2. [Data Science and Statistics](#data-science-and-statistics)  
@@ -19,6 +20,13 @@ If you want to participate, please do so and send me a pull request :)
    * [Leadership](#leadership)
    * [Digital Transformation](#digital-transformation)
 9. [Various](#various)
+
+### Covid-19 Special
+* [365 Data Science](https://365datascience.com/) - alle Kurse kostenlos bis 15.04.
+* [Class Central](https://www.freecodecamp.org/news/ivy-league-free-online-courses-a0d7ae675869/) - 450 kostenlose Online-Kurse der Ivy League
+* [Oncampus](https://www.oncampus.de/weiterbildung/selbstlernkurse) - 120 Selbstlernkurse kostenlos mit dem Code `elearning`
+* [Rosetta Stone](https://www.rosettastone.com/freeforstudents/) - Online Sprachkurse 3 Monate kostenlos testen (24 Sprachen)
+* [Unity Learn](https://unity.com/products/learn-premium) - Premium 3 Monate kostenlos
 
 ### AI
 * [AwesomeAI](https://github.com/hades217/awesome-ai): A very nice summary about AI courses, that I will just add some things to.  

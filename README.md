@@ -28,6 +28,7 @@ If you want to participate, please do so and send me a pull request :)
 * [Rosetta Stone](https://www.rosettastone.com/freeforstudents/) - Online Sprachkurse 3 Monate kostenlos testen (24 Sprachen)
 * [Unity Learn](https://unity.com/products/learn-premium) - Premium 3 Monate kostenlos
 * [All You Can Read](https://www.hifitest.de/allyoucanread) - 1 Jahres Abo kostenfrei mit dem Code `refabyda23`
+* [Pluralsight](https://www.pluralsight.com/offer/2020/free-april-month) - Den kompletten Monat April kostenlos
 
 ### AI
 * [AwesomeAI](https://github.com/hades217/awesome-ai): A very nice summary about AI courses, that I will just add some things to.  

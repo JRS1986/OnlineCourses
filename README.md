@@ -29,6 +29,7 @@ If you want to participate, please do so and send me a pull request :)
 * [All You Can Read](https://www.hifitest.de/allyoucanread) - 1 Jahres Abo kostenfrei mit dem Code `refabyda23`
 
 ### AI
+* [The Machine Learning Summer School](http://mlss.tuebingen.mpg.de/2020/schedule.html): Tübingen University held their summer school completely online this year and all lectures are available for free.
 * [AwesomeAI](https://github.com/hades217/awesome-ai): A very nice summary about AI courses, that I will just add some things to.  
 * [DeepLearning.AI](https://www.deeplearning.ai/ "DeepLearning.AI"): Andrew Ng's Deep Learning specialization course.  
 * [Fast AI Course](https://course.fast.ai/)

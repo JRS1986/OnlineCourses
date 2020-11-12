@@ -26,6 +26,7 @@ If you want to participate, please do so and send me a pull request :)
 * [Oncampus](https://www.oncampus.de/weiterbildung/selbstlernkurse) - 120 Selbstlernkurse kostenlos mit dem Code `elearning`
 
 ### AI
+* [Deep Learning Course by Yann LeCun](https://atcold.github.io/pytorch-Deep-Learning/): This course concerns the latest techniques in deep learning and representation learning, focusing on supervised and unsupervised deep learning, embedding methods, metric learning, convolutional and recurrent nets, with applications to computer vision, natural language understanding, and speech recognition.
 * [The Machine Learning Summer School](http://mlss.tuebingen.mpg.de/2020/schedule.html): Tübingen University held their summer school completely online this year and all lectures are available for free.
 * [AwesomeAI](https://github.com/hades217/awesome-ai): A very nice summary about AI courses, that I will just add some things to.  
 * [DeepLearning.AI](https://www.deeplearning.ai/ "DeepLearning.AI"): Andrew Ng's Deep Learning specialization course.  

@@ -24,9 +24,6 @@ If you want to participate, please do so and send me a pull request :)
 ### Covid-19 Special
 * [Class Central](https://www.freecodecamp.org/news/ivy-league-free-online-courses-a0d7ae675869/) - 450 kostenlose Online-Kurse der Ivy League
 * [Oncampus](https://www.oncampus.de/weiterbildung/selbstlernkurse) - 120 Selbstlernkurse kostenlos mit dem Code `elearning`
-* [Rosetta Stone](https://www.rosettastone.com/freeforstudents/) - Online Sprachkurse 3 Monate kostenlos testen (24 Sprachen)
-* [Unity Learn](https://unity.com/products/learn-premium) - Premium 3 Monate kostenlos
-* [All You Can Read](https://www.hifitest.de/allyoucanread) - 1 Jahres Abo kostenfrei mit dem Code `refabyda23`
 
 ### AI
 * [The Machine Learning Summer School](http://mlss.tuebingen.mpg.de/2020/schedule.html): Tübingen University held their summer school completely online this year and all lectures are available for free.

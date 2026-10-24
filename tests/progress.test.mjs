@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {freshAssessment, blankProgress, normalizeDraft, normalizeProgress, createProgressStore, storageKey, stepKey, nextLearningStep} from '../web/progress.js';
+import {freshAssessment, blankProgress, normalizeDraft, normalizeProgress, createProgressStore, storageKey, stepKey, pathSignature, nextLearningStep} from '../web/progress.js';
 import {questionsFor, makePlan} from '../web/assessment.js';
 const data=JSON.parse(readFileSync(new URL('../_site/data.json',import.meta.url)));
 const key=storageKey('/OnlineCourses/');
@@ -115,10 +115,14 @@ test('continue learning follows prerequisite paths before the chosen destination
   assert.equal(nextLearningStep(data,state).pathId,'P1');
   const prerequisite=data.paths.find(p=>p.id==='P1');
   for(const step of prerequisite.steps)state.completedSteps[stepKey(prerequisite,step)]=true;
+  assert.equal(nextLearningStep(data,state).href,'#paths/P1?step=exit');
+  state.completedPaths.P1=pathSignature(prerequisite);
   assert.equal(nextLearningStep(data,state).courseId,'C06');
   state.completedCourses.C06=true;
   assert.equal(nextLearningStep(data,state).pathId,'D1');
   assert.equal(nextLearningStep(data,state,'W2').pathId,'W2');
+  delete state.completedPaths.P1;
+  assert.equal(nextLearningStep(data,state).href,'#paths/P1?step=exit');
 });
 
 test('course marks never silently complete path exercises',()=>{

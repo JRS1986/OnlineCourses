@@ -10,6 +10,8 @@ The [Industrial AI field guide](https://jrs1986.github.io/OnlineCourses/) runs i
 - Receive an explained learning sequence with prerequisites, resource suggestions, and exit checks.
 - Use **Continue learning** on the home, plan, progress, or path page to jump to the next unfinished study block.
 - Resume an assessment after closing the tab, mark resources and study blocks complete, and manage them under **My progress**.
+- Earn resource badges, milestones at 1/5/10 completed resources, and path badges after confirming the exit check.
+- Attach certificates or completion evidence as PDFs, PNGs, JPEGs, or WebP images; preview images and download or remove files.
 - Export or restore a JSON progress backup, or clear this site’s local learning data.
 - Download a Markdown plan or use the browser's Print / Save PDF option.
 - Use the teaching kit, practice briefs, and learning record directly in the browser.
@@ -18,9 +20,9 @@ Motion follows the device's reduced-motion preference. The **Motion on/off** but
 
 ## Privacy and persistence
 
-The assessment runs in the browser. Answers, the current question, study preferences, the most recent completed plan, resource completion, study-block completion, and resume links are saved automatically in local storage. Opening the site without a destination returns to the last page; explicit shared links still open their requested destination. A path-specific assessment link resumes an existing draft for that goal. Retaking an assessment keeps course and study-block progress, and the previous plan remains available until a new plan is completed.
+The assessment runs in the browser. Answers, the current question, study preferences, the most recent completed plan, resource completion, study-block completion, path exit-check confirmations, and resume links are saved automatically in local storage. Opening the site without a destination returns to the last page; explicit shared links still open their requested destination. A path-specific assessment link resumes an existing draft for that goal. Retaking an assessment keeps course and study-block progress, and the previous plan remains available until a new plan is completed.
 
-**My progress** provides a JSON backup export, a file-based restore preview with confirmation, and a clear-data control. Backups contain the learner's assessment answers. A restore replaces this browser's learning data. Clearing removes only this guide's namespaced record, leaving other sites' data alone. Course marks represent the material the learner intended to study; path blocks and exit checks remain separate.
+**My progress** provides a JSON backup export, a file-based restore preview with confirmation, and a clear-data control. Progress JSON backups contain the learner's assessment answers and badge eligibility, but not attachment files. A restore replaces this browser's learning data. Clearing assessment and progress removes only this guide's namespaced progress record, leaving attachments and other sites' data alone. Attachments have separate removal controls. Course marks represent the material the learner intended to study; path blocks and exit checks remain separate.
 
 Local data belongs to this browser profile and device. Other people using that profile can see it. Private browsing, clearing site data, browser policies, or a device change can remove or separate saved progress; backups can be transferred manually. There is no account or automatic cloud sync. If storage is blocked or full, a persistent notice explains that changes are only available for the current visit and can be exported.
 
@@ -34,9 +36,21 @@ This is a formative learning aid, not an examination or an employee assessment. 
 
 On **My progress**, the home page, and the saved plan, **Continue learning** follows the recommended sequence in order: prerequisite paths, individual prerequisite courses, any practice check, and then the destination path. Within a path it opens and highlights the first unchecked study block, including an earlier gap if later blocks were completed out of order. Completing or undoing a block updates the target immediately. Direct step links work after a reload.
 
-A path page's button stays within that path. Without a saved plan, the general button uses the most recently visited path, then a started path or the draft assessment's chosen goal. With no selected path it invites the learner to choose one. When all study blocks are checked off, it offers the path's exit check rather than restarting or claiming certification.
+A path page's button stays within that path. Without a saved plan, the general button uses the most recently visited path, then a started path or the draft assessment's chosen goal. With no selected path it invites the learner to choose one. When all study blocks are checked off, it offers the path's exit check rather than restarting. Confirming that check finishes the path and earns its badge; this remains a personal learning record rather than a certification. In a saved plan, prerequisite exit checks are included before continuing to the next course or path.
 
 Course marks do not automatically complete a path's exercises. A stand-alone prerequisite course can be marked complete on its resource page. If the plan asks for a Python practice check, the linked B1 brief has a separate completion control that saves locally and can be undone. Old progress backups remain compatible; missing new fields start empty.
+
+## Badges and completion evidence
+
+Resource badges and the 1/5/10-resource milestones follow current completion marks. A path badge requires every study block plus an explicit **Confirm exit check & finish path** action. Undoing a required block or reopening a path removes its badge; changed curriculum or exit criteria also invalidate stale path confirmations. Restoring a progress backup recalculates badges. Loading a page or synchronizing another tab does not trigger a celebration.
+
+Completion celebrations last a few seconds, do not steal focus, and can be dismissed. Confetti and entrance animation follow both the device's reduced-motion preference and the site's motion control; with motion disabled, a static completion message remains.
+
+The evidence section on each course, path, and **My progress** stores attachments in a namespaced **IndexedDB** database on this browser and device. The accepted formats are PDF, PNG, JPEG, and WebP, detected from their signatures. Limits are 10 MB per file, 50 files, and 100 MB total; the browser may impose a smaller available quota. Files are not sent to a server, analysed, or used to verify an achievement. Attaching a file does not automatically complete anything.
+
+Images can be previewed. All files can be downloaded in their original bytes or removed, with a separate control for removing all attachments. PDFs are downloaded rather than embedded in the page. Keep the original files: **progress JSON exports and restores exclude attachments**, and an imported progress backup leaves existing files untouched. Download attachments individually when moving devices. Clearing browser site data can erase both progress and files; the in-app progress reset keeps files and the attachment-removal controls keep progress.
+
+If browser file storage is blocked or full, the attachment area reports the failure and never claims that a file was saved. Ordinary course and assessment progress continues to work independently. The file list refreshes across tabs where the browser supports BroadcastChannel.
 
 ## Maintain the content
 
@@ -49,6 +63,8 @@ The website is generated from the same sources as the repository guide:
 | Questions, path metadata, and prerequisite rules | [Assessment script](../scripts/assess.py) |
 | Browser recommendation rules | [Browser assessment](../web/assessment.js) |
 | Guides, practice briefs, and teaching material | Markdown files in this directory |
+| Badges and path-completion rules | [Achievements](../web/achievements.js) |
+| Certificate and screenshot storage | [Evidence storage](../web/evidence.js) |
 | Local saving, validation, and recovery | [Progress storage](../web/progress.js) |
 | Visual design and browser interactions | Files in `web/` |
 

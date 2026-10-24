@@ -10,8 +10,9 @@ function fingerprint(value) {
 }
 export const assessmentVersion = data => fingerprint([data.questions, data.paths.map(p=>[p.id,p.domains])]);
 export const stepKey = (path, step) => `${path.id}:${step.order}:${fingerprint([step.text,step.hours])}`;
+export const pathSignature = path => JSON.stringify([path.steps.map(step=>stepKey(path,step)),path.outcome]);
 export const storageKey = pathname => `industrial-ai:${pathname.replace(/index\.html$/, '').replace(/\/$/, '') || '/'}:learning:v1`;
-export const blankProgress = data => ({version:STORAGE_VERSION, questionVersion:assessmentVersion(data), draft:freshAssessment(), savedPlan:null, completedCourses:{}, completedSteps:{}, completedChecks:{}, lastPathId:'', lastRoute:'#home', lastLearningRoute:'', updatedAt:null});
+export const blankProgress = data => ({version:STORAGE_VERSION, questionVersion:assessmentVersion(data), draft:freshAssessment(), savedPlan:null, completedCourses:{}, completedSteps:{}, completedChecks:{}, completedPaths:{}, lastPathId:'', lastRoute:'#home', lastLearningRoute:'', updatedAt:null});
 
 export function safeRoute(data, route) {
   if (typeof route !== 'string' || route.length>1500) return '#home';
@@ -53,6 +54,7 @@ export function normalizeProgress(data, raw) {
   }
   for(const c of data.courses)if(raw.completedCourses?.[c.id]===true)state.completedCourses[c.id]=true;
   for(const path of data.paths)for(const step of path.steps){const key=stepKey(path,step);if(raw.completedSteps?.[key]===true)state.completedSteps[key]=true;}
+  for(const path of data.paths)if(raw.completedPaths?.[path.id]===pathSignature(path) && path.steps.every(step=>state.completedSteps[stepKey(path,step)]))state.completedPaths[path.id]=pathSignature(path);
   if(raw.completedChecks?.['python-utility']===true)state.completedChecks['python-utility']=true;
   if(data.paths.some(p=>p.id===raw.lastPathId))state.lastPathId=raw.lastPathId;
   state.lastRoute=safeRoute(data,raw.lastRoute);
@@ -103,13 +105,13 @@ export function nextLearningStep(data, state, pathId = '') {
     const step=path.steps.find(s=>!state.completedSteps[stepKey(path,s)]);
     return step ? {kind:'step', pathId:path.id, order:step.order, title:`${path.title} · study block ${step.order}`, href:`#paths/${path.id}?step=${step.order}`} : null;
   };
-  const finished = path => ({kind:'complete',pathId:path.id,title:`${path.title}: all study blocks complete`,href:`#paths/${path.id}?step=exit`});
+  const finished = path => ({kind:'complete',pathId:path.id,title:state.completedPaths?.[path.id]===pathSignature(path)?`${path.title}: path finished`:`${path.title}: all study blocks complete`,href:`#paths/${path.id}?step=exit`});
   if(pathId){const path=findPath(pathId);return path ? nextInPath(path)||finished(path) : null;}
   if(state.savedPlan){
     const plan=makePlan(data,state.savedPlan,state.savedPlan.answers);
     for(const block of plan.blocks){
       const path=findPath(block.id);
-      if(path){const next=nextInPath(path);if(next)return next;}
+      if(path){const next=nextInPath(path);if(next)return next;if(state.completedPaths?.[path.id]!==pathSignature(path))return finished(path);}
       else if(block.id==='practice'){
         if(!state.completedChecks?.['python-utility'])return {kind:'practice',title:'Confirm your Python skills in practice',href:'#guide/practice?section=b1-sensor-data-contract&check=python-utility'};
       }else if(!state.completedCourses[block.id]){

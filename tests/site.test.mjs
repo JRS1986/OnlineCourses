@@ -134,3 +134,5 @@ test('published assets use one build version throughout the module graph',()=>{
   }
   assert.deepEqual(JSON.parse(read(manifest.assets['data.json'])),data);
 });
+
+import './rewards.test.mjs';

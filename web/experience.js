@@ -74,3 +74,24 @@ export function enhanceView() {
   }
   activeCleanup=()=>cleanups.forEach(fn=>fn());
 }
+
+let celebrationTimer;
+export function celebrateCompletion({title,detail,glyph='✦'}){
+  document.querySelector('.completion-celebration')?.remove();clearTimeout(celebrationTimer);
+  const card=document.createElement('aside');card.className='completion-celebration';card.setAttribute('aria-label','Learning milestone');
+  const emblem=document.createElement('span');emblem.className='celebration-emblem';emblem.textContent=glyph;emblem.setAttribute('aria-hidden','true');
+  const message=document.createElement('div');
+  const announcer=document.querySelector('#celebration-announcer');
+  if(announcer){announcer.textContent='';requestAnimationFrame(()=>{announcer.textContent=title+' '+detail;});}
+  const label=document.createElement('small');label.textContent='A LITTLE PROGRESS. A REAL ACHIEVEMENT.';
+  const strong=document.createElement('strong');strong.textContent=title;
+  const text=document.createElement('p');text.textContent=detail;
+  message.append(label,strong,text);
+  const close=document.createElement('button');close.type='button';close.className='celebration-close';close.setAttribute('aria-label','Dismiss celebration');close.textContent='×';close.onclick=()=>{card.remove();clearTimeout(celebrationTimer);};
+  card.append(emblem,message,close);
+  if(motionEnabled&&!reducedMotion.matches){
+    card.classList.add('with-motion');
+    for(let i=0;i<18;i++){const spark=document.createElement('i');spark.className='celebration-spark';spark.setAttribute('aria-hidden','true');spark.style.setProperty('--x',`${(i%6-2.5)*36}px`);spark.style.setProperty('--y',`${-75-(i%4)*30}px`);spark.style.setProperty('--turn',`${(i%2?1:-1)*(90+i*20)}deg`);spark.style.setProperty('--delay',`${i%3*70}ms`);spark.style.setProperty('--spark',['#d4ff64','#a9d8ff','#ffb69a'][i%3]);card.append(spark);}
+  }
+  document.body.append(card);celebrationTimer=setTimeout(()=>card.remove(),4500);
+}

@@ -1,5 +1,8 @@
-import {freshAssessment, createProgressStore, storageKey, stepKey, normalizeProgress, nextLearningStep} from './progress.js';
-import {brainExplorer, enhanceView, installMotionControl} from './experience.js';
+import {earnedBadges, pathComplete} from './achievements.js';
+import {createEvidenceStore} from './evidence.js';
+import {evidenceSection, mountEvidence} from './evidence-ui.js';
+import {freshAssessment, createProgressStore, storageKey, stepKey, normalizeProgress, nextLearningStep, pathSignature} from './progress.js';
+import {brainExplorer, enhanceView, installMotionControl, celebrateCompletion} from './experience.js';
 import {escapeHTML as e, createMarkdown, slug} from './markdown.js';
 import {questionsFor, makePlan} from './assessment.js';
 
@@ -8,7 +11,8 @@ const domainNames = {use:'AI judgment',python:'Python',engineering:'Software pra
 const icons = {P0:'◎',P1:'⌘',W1:'▤',W2:'◇',W3:'⊞',W4:'⌁',D1:'⏣',D2:'▦',D3:'✳',D4:'▥',T1:'▧'};
 const groups = ['All paths','AI at work','Developing AI','Foundations','Teaching'];
 installMotionControl();
-let data, md, store, progress;
+let data, md, store, progress, evidenceStore, evidenceChannel;
+let evidenceCleanup=()=>{};
 let assessment = freshAssessment();
 let result = null;
 let toastTimer;
@@ -54,7 +58,7 @@ function empty(title, body, action = '') { return `<div class="empty-state"><h2>
 function pathDetail(id, params) {
   const p = pathById(id); if (!p) return notFound();
   document.title = `${p.title} — Industrial AI`;
-  main.innerHTML = `<div class="breadcrumb"><a href="#paths">Learning paths</a><span>/</span><span>${e(p.id)}</span></div><div class="path-detail"><article class="detail-main">${heading(`${p.group} / ${p.id}`, p.title, p.description)}<div class="prose">${md.render(p.intro,'docs/LEARNING_PATHS.md')}</div><div class="section-head"><h2>Your study sequence</h2></div>${pathProgress(p)}<ol class="timeline">${p.steps.map(s => `<li id="study-step-${s.order}" tabindex="-1"><span class="step-index">${s.order}</span><div class="step-content"><small>STUDY BLOCK ${s.order} · ${s.hours} ${s.hours === 1 ? 'HOUR' : 'HOURS'}</small><p>${md.inline(s.text,'docs/LEARNING_PATHS.md')}</p>${stepButton(p,s)}</div></li>`).join('')}</ol><div class="prose" id="path-exit-check" tabindex="-1">${md.render(p.outcome,'docs/LEARNING_PATHS.md')}</div><div class="notice">This is a focused study plan, not the full provider courses. Use the exit check to decide when to move on. Add time for any prerequisite gaps.</div></article><aside class="detail-sidebar"><div class="detail-stats"><div><strong>${p.hours} h</strong><span>planned effort</span></div><div><strong>${p.steps.length}</strong><span>study blocks</span></div></div>${continuePanel(p.id)}<p class="progress-help">Tick off study blocks as you go. Course completion is tracked separately; finish the exit check to confirm your learning.</p><h3>Make this path your own.</h3><p>Check your starting knowledge and get a plan that fits your time.</p><a class="button" href="#assessment?goal=${id}">Assess my starting point ↗</a><button class="button secondary" id="share-path">Copy path link</button><h3 style="margin-top:24px">Start with these resources</h3>${p.resources.map(resourceLink).join('')}<a class="resource-link" href="#guide/learning-record"><small>MAKE PROGRESS VISIBLE</small>Learning record template ↗</a></aside></div>`;
+  main.innerHTML = `<div class="breadcrumb"><a href="#paths">Learning paths</a><span>/</span><span>${e(p.id)}</span></div><div class="path-detail"><article class="detail-main">${heading(`${p.group} / ${p.id}`, p.title, p.description)}<div class="prose">${md.render(p.intro,'docs/LEARNING_PATHS.md')}</div><div class="section-head"><h2>Your study sequence</h2></div>${pathProgress(p)}<ol class="timeline">${p.steps.map(s => `<li id="study-step-${s.order}" tabindex="-1"><span class="step-index">${s.order}</span><div class="step-content"><small>STUDY BLOCK ${s.order} · ${s.hours} ${s.hours === 1 ? 'HOUR' : 'HOURS'}</small><p>${md.inline(s.text,'docs/LEARNING_PATHS.md')}</p>${stepButton(p,s)}</div></li>`).join('')}</ol><div class="prose" id="path-exit-check" tabindex="-1">${md.render(p.outcome,'docs/LEARNING_PATHS.md')}${exitCheckControl(p)}</div><div class="notice">This is a focused study plan, not the full provider courses. Use the exit check to decide when to move on. Add time for any prerequisite gaps.</div>${badgeShelf(`path:${p.id}`)}${evidenceSection(data,`path:${p.id}`)}</article><aside class="detail-sidebar"><div class="detail-stats"><div><strong>${p.hours} h</strong><span>planned effort</span></div><div><strong>${p.steps.length}</strong><span>study blocks</span></div></div>${continuePanel(p.id)}<p class="progress-help">Tick off study blocks as you go. Course completion is tracked separately; finish the exit check to confirm your learning.</p><h3>Make this path your own.</h3><p>Check your starting knowledge and get a plan that fits your time.</p><a class="button" href="#assessment?goal=${id}">Assess my starting point ↗</a><button class="button secondary" id="share-path">Copy path link</button><h3 style="margin-top:24px">Start with these resources</h3>${p.resources.map(resourceLink).join('')}<a class="resource-link" href="#guide/learning-record"><small>MAKE PROGRESS VISIBLE</small>Learning record template ↗</a></aside></div>`;
   document.querySelector('#share-path').addEventListener('click', () => copyLink(location.href));
 }
 
@@ -89,7 +93,7 @@ function courseDetail(id) {
   const c = courseById(id); if (!c) return notFound();
   document.title = `${c.title} — Industrial AI`;
   const related = data.paths.filter(p => p.allResources.includes(id));
-  main.innerHTML = `<div class="breadcrumb"><a href="#courses">Course library</a><span>/</span><span>${id}</span></div><div class="path-detail"><article><div class="page-heading"><span class="eyebrow">${e(c.type)} / ${id}</span><h1>${e(c.title)}</h1><div class="course-provider">${md.inline(c.provider)}</div>${badge(c)}</div><div class="prose"><h2>Suggested first study block</h2><p>${md.inline(c.scope)}</p>${c.prerequisites ? `<h2>Starting knowledge</h2><p>${md.inline(c.prerequisites)}</p>`:''}<h2>Access & practical value</h2><p>${md.inline(c.access)}</p><p>Study estimates refer to selected material and practice. The public listing was reviewed; individual accounts, labs, and certificates were not tested.</p></div><a class="button" href="${e(c.url)}" target="_blank" rel="noopener noreferrer">Visit the provider ↗</a>${courseButton(c)}${result?.blocks.some(b=>b.id===id)?continuePanel():''}<p class="micro-note">Mark the material you intended to study as complete. You can undo this at any time.</p></article><aside class="detail-sidebar"><h3>Put this resource in context</h3><p>${related.length ? 'Study it as part of a focused path.' : 'An optional resource for deeper study.'}</p>${related.map(p=>`<a class="resource-link" href="#paths/${p.id}"><small>${p.id} · ${p.hours} HOURS</small>${e(p.title)} →</a>`).join('')}<a class="resource-link" href="#guide/research">Research & access limitations ↗</a></aside></div>`;
+  main.innerHTML = `<div class="breadcrumb"><a href="#courses">Course library</a><span>/</span><span>${id}</span></div><div class="path-detail"><article><div class="page-heading"><span class="eyebrow">${e(c.type)} / ${id}</span><h1>${e(c.title)}</h1><div class="course-provider">${md.inline(c.provider)}</div>${badge(c)}</div><div class="prose"><h2>Suggested first study block</h2><p>${md.inline(c.scope)}</p>${c.prerequisites ? `<h2>Starting knowledge</h2><p>${md.inline(c.prerequisites)}</p>`:''}<h2>Access & practical value</h2><p>${md.inline(c.access)}</p><p>Study estimates refer to selected material and practice. The public listing was reviewed; individual accounts, labs, and certificates were not tested.</p></div><a class="button" href="${e(c.url)}" target="_blank" rel="noopener noreferrer">Visit the provider ↗</a>${courseButton(c)}${result?.blocks.some(b=>b.id===id)?continuePanel():''}<p class="micro-note">Mark the material you intended to study as complete. You can undo this at any time.</p>${badgeShelf(`course:${id}`)}${evidenceSection(data,`course:${id}`)}</article><aside class="detail-sidebar"><h3>Put this resource in context</h3><p>${related.length ? 'Study it as part of a focused path.' : 'An optional resource for deeper study.'}</p>${related.map(p=>`<a class="resource-link" href="#paths/${p.id}"><small>${p.id} · ${p.hours} HOURS</small>${e(p.title)} →</a>`).join('')}<a class="resource-link" href="#guide/research">Research & access limitations ↗</a></aside></div>`;
 }
 
 function guide(id, params) {
@@ -191,6 +195,7 @@ function notFound(){main.innerHTML=empty('That page isn’t in the guide.','Choo
 function render({remember=true}={}){
   const hash=location.hash.slice(1)||'home';
   if(hash==='main'){main.focus();return;}
+  evidenceCleanup();
   const [route,query='']=hash.split('?');const [page,id]=route.split('/');const params=new URLSearchParams(query);
   document.title='Industrial AI — Learning field guide';
   const active=page==='guide'?({teaching:'teaching',research:'research','industrial-ai':'map'}[id]||''):page;
@@ -200,6 +205,7 @@ function render({remember=true}={}){
   const current=location.hash||'#home';
   if(remember && progress.lastRoute!==current)saveProgress(state=>{state.lastRoute=current;if(/^#(?:paths|courses|guide)\//.test(current))state.lastLearningRoute=current;if(page==='paths' && pathById(id))state.lastPathId=id;});
   updateSaveStatus();
+  mountAttachments();
   enhanceView();
   window.scrollTo({top:0,behavior:'instant'});main.focus({preventScroll:true});
   if(page==='paths')requestAnimationFrame(()=>focusStudyTarget(params));
@@ -222,6 +228,34 @@ function updateSaveStatus(){
   warning.hidden=store.status==='ready';
   warning.innerHTML=store.status==='invalid' ? 'The saved data format could not be read. Existing storage has been left untouched. You can use this visit, export progress, or <a href="#progress">clear this site’s saved data</a> to start saving again.' : 'Your browser could not save progress. This visit still works, but changes may be lost when you leave. <a href="#progress">Export your progress</a> to keep a copy.';
 }
+function mountAttachments(){
+  evidenceCleanup();
+  evidenceCleanup=mountEvidence(main,{data,store:evidenceStore,notify,channel:evidenceChannel});
+}
+function badgeShelf(target=''){
+  const all=earnedBadges(data,progress);
+  const badges=target?all.filter(b=>b.id===target):all;
+  return `<section class="badge-shelf" data-badge-shelf="${e(target)}"><div class="section-head"><div><span class="eyebrow">SKILLS GROW. YOUR COLLECTION DOES TOO.</span><h2>${target?'Your completion badge':`Your badge collection <span class="badge-count">${badges.length}</span>`}</h2></div></div>${badges.length?`<div class="achievement-grid">${badges.map(b=>`<a class="achievement-badge ${b.type}" href="${e(b.href)}"><span class="badge-emblem" aria-hidden="true">${b.glyph}</span><span><small>${e(b.detail)}</small><strong>${e(b.title)}</strong></span></a>`).join('')}</div>`:`<div class="badge-empty"><span class="badge-emblem locked" aria-hidden="true">✦</span><div><strong>${target.startsWith('path:')?'A path worth finishing.':'Your first finish starts the collection.'}</strong><p>${target.startsWith('path:')?'Complete the study blocks and confirm the exit check to earn this badge.':'Mark a resource complete to earn its badge. Milestones unlock at 1, 5, and 10 completed resources.'}</p></div></div>`}<p class="micro-note">Personal learning badges reflect your completion marks. Provider certificates can be attached separately.</p></section>`;
+}
+function exitCheckControl(path){
+  const ready=path.steps.every(step=>progress.completedSteps[stepKey(path,step)]),done=pathComplete(path,progress);
+  return `<div class="exit-check-control" data-exit-check="${path.id}"><strong>${done?'Path finished. Badge earned!':'Make the finish count.'}</strong><p>${done?'You confirmed the exit check. Reopen it if you want to revisit your work.':'After completing the study blocks, confirm that you can explain your work and meet the exit criteria above.'}</p><button class="button ${done?'secondary':''}" data-path-finish="${path.id}" aria-pressed="${done}" ${ready?'':'disabled'}>${done?'Reopen this path':'Confirm exit check & finish path'}</button>${ready?'':'<small>Complete the remaining study blocks to unlock the finish.</small>'}</div>`;
+}
+function refreshRewards(){
+  document.querySelectorAll('[data-badge-shelf]').forEach(el=>{el.outerHTML=badgeShelf(el.dataset.badgeShelf);});
+  document.querySelectorAll('[data-exit-check]').forEach(el=>{el.outerHTML=exitCheckControl(pathById(el.dataset.exitCheck));});
+}
+main.addEventListener('click',event=>{
+  const button=event.target.closest('[data-path-finish]');if(!button)return;
+  const path=pathById(button.dataset.pathFinish);
+  if(!path || !path.steps.every(step=>progress.completedSteps[stepKey(path,step)]))return;
+  const done=!pathComplete(path,progress);
+  saveProgress(state=>{if(done)state.completedPaths[path.id]=pathSignature(path);else delete state.completedPaths[path.id];});
+  refreshRewards();refreshContinuePanels();
+  document.querySelector(`[data-path-finish="${path.id}"]`)?.focus({preventScroll:true});
+  if(done)celebrateCompletion({title:'Learning path complete!',detail:path.title+' · Path finisher badge earned',glyph:'◆'});
+  else notify('Path reopened. Your study blocks and attachments are kept.');
+});
 function courseButton(c){
   const complete=!!progress.completedCourses[c.id];
   return `<button class="completion-toggle ${complete?'is-complete':''}" data-course="${c.id}" aria-pressed="${complete}" aria-label="${complete?'Undo completion of':'Mark complete:'} ${e(c.title)}"><span aria-hidden="true">${complete?'✓':'○'}</span> ${complete?'Completed · undo':'Mark complete'}</button>`;
@@ -237,8 +271,9 @@ function pathProgress(path){
 function continuePanel(pathId=''){
   const next=nextLearningStep(data,progress,pathId);
   const done=next?.kind==='complete';
-  const hint=!next?'Choose a path or finish the assessment to get a personal starting point.':done?'Finish the exit check and record what you learned. You can undo a completion mark to revisit a block.':next.kind==='course'?'Complete this prerequisite resource before moving on to the next study block.':next.kind==='practice'?'Confirm your quiz results with a worked example before continuing.':'Your next unchecked study block, based on saved progress. Course marks do not replace the block’s exercises.';
-  return `<section class="continue-panel ${done?'is-finished':''}" data-continue-path="${e(pathId)}"><div><span class="eyebrow">${done?'ALL STUDY BLOCKS CHECKED OFF':'YOUR NEXT STEP'}</span><h2>${e(next?.title||'Choose your learning path.')}</h2><p>${hint}</p></div><a class="button" data-continue-link href="${e(next?.href||'#paths')}">${done?'Review exit check':next?'Continue learning':'Choose a learning path'} <span aria-hidden="true">→</span></a></section>`;
+  const finished=done && pathComplete(pathById(next.pathId),progress);
+  const hint=!next?'Choose a path or finish the assessment to get a personal starting point.':finished?'Path finished. Enjoy your badge, revisit what you learned, or choose another learning path.':done?'Finish the exit check and record what you learned. You can undo a completion mark to revisit a block.':next.kind==='course'?'Complete this prerequisite resource before moving on to the next study block.':next.kind==='practice'?'Confirm your quiz results with a worked example before continuing.':'Your next unchecked study block, based on saved progress. Course marks do not replace the block’s exercises.';
+  return `<section class="continue-panel ${done?'is-finished':''}" data-continue-path="${e(pathId)}"><div><span class="eyebrow">${finished?'PATH COMPLETE':done?'ALL STUDY BLOCKS CHECKED OFF':'YOUR NEXT STEP'}</span><h2>${e(next?.title||'Choose your learning path.')}</h2><p>${hint}</p></div><a class="button" data-continue-link href="${e(next?.href||'#paths')}">${finished?'Review learning path':done?'Review exit check':next?'Continue learning':'Choose a learning path'} <span aria-hidden="true">→</span></a></section>`;
 }
 function refreshContinuePanels(){
   document.querySelectorAll('[data-continue-path]').forEach(el=>{el.outerHTML=continuePanel(el.dataset.continuePath);});
@@ -268,7 +303,7 @@ function progressPage(){
   const completed=data.courses.filter(c=>progress.completedCourses[c.id]);
   const started=data.paths.filter(p=>p.steps.some(s=>progress.completedSteps[stepKey(p,s)]) || p.id===result?.settings.goal);
   const answered=Object.keys(assessment.answers).length;
-  main.innerHTML=`${heading('YOUR PERSONAL LEARNING LOG','Small steps. Real progress.','Your assessment, plan, and completion marks are saved on this browser and device. No account needed.')}<div class="progress-summary"><div><strong>${completed.length}</strong><span>resources complete</span></div><div><strong>${Object.keys(progress.completedSteps).length}</strong><span>study blocks complete</span></div><div><strong>${answered}</strong><span>assessment answers saved</span></div></div>${continuePanel()}<div class="actions progress-links"><a class="button secondary small" href="#assessment">${assessment.goal?'Resume assessment':'Find my path'} →</a>${result?'<a class="button secondary small" href="#plan">Open saved plan →</a>':''}${progress.lastLearningRoute?`<a class="text-link" href="${e(progress.lastLearningRoute)}">Last learning page ↗</a>`:''}</div><div class="section-head"><h2>Your learning paths</h2><a class="text-link" href="#paths">Explore paths →</a></div><div class="cards">${started.length?started.map(pathCard).join(''):empty('Start with one study block.','Open a path and tick off each study block as you finish it.')}</div><p class="micro-note">Resource marks and study blocks are tracked separately. They record your progress; they do not replace a path’s exit check.</p><div class="section-head"><h2>Completed resources</h2><a class="text-link" href="#courses">Browse the library →</a></div><div class="library-grid">${completed.length?completed.map(courseCard).join(''):empty('Your first completion goes here.','Use “Mark complete” on any course or reading when you finish the material you intended to study.')}</div><section class="local-data-panel"><span class="eyebrow">YOU CONTROL YOUR DATA</span><h2>Keep a copy. Pick up anywhere.</h2><p>${savingNote()} Browser data is shared by people using the same browser profile. Clearing site data, private browsing, or switching devices can remove or separate your progress. There is no automatic cloud sync.</p><div class="actions"><button class="button secondary" id="export-progress">Export progress ↓</button><label class="button secondary import-label">Restore a backup<input id="import-progress" type="file" accept="application/json,.json"></label></div><p class="micro-note">Backups contain assessment answers and progress. Restoring replaces this browser’s current learning data after you confirm.</p><div id="import-preview" role="status"></div><details class="clear-progress"><summary>Clear this site’s saved progress</summary><p>This removes assessment answers, the saved plan, completion marks, and resume links from this browser. Export a backup first if you want to keep them.</p><button class="button secondary" id="clear-progress">Clear my local learning data</button></details></section>`;
+  main.innerHTML=`${heading('YOUR PERSONAL LEARNING LOG','Small steps. Real progress.','Your assessment, plan, and completion marks are saved on this browser and device. No account needed.')}<div class="progress-summary"><div><strong>${completed.length}</strong><span>resources complete</span></div><div><strong>${Object.keys(progress.completedSteps).length}</strong><span>study blocks complete</span></div><div><strong>${answered}</strong><span>assessment answers saved</span></div></div>${continuePanel()}<div class="actions progress-links"><a class="button secondary small" href="#assessment">${assessment.goal?'Resume assessment':'Find my path'} →</a>${result?'<a class="button secondary small" href="#plan">Open saved plan →</a>':''}${progress.lastLearningRoute?`<a class="text-link" href="${e(progress.lastLearningRoute)}">Last learning page ↗</a>`:''}</div>${badgeShelf()}<div class="section-head"><h2>Your learning paths</h2><a class="text-link" href="#paths">Explore paths →</a></div><div class="cards">${started.length?started.map(pathCard).join(''):empty('Start with one study block.','Open a path and tick off each study block as you finish it.')}</div><p class="micro-note">Resource marks and study blocks are tracked separately. They record your progress; they do not replace a path’s exit check.</p><div class="section-head"><h2>Completed resources</h2><a class="text-link" href="#courses">Browse the library →</a></div><div class="library-grid">${completed.length?completed.map(courseCard).join(''):empty('Your first completion goes here.','Use “Mark complete” on any course or reading when you finish the material you intended to study.')}</div>${evidenceSection(data)}<section class="local-data-panel"><span class="eyebrow">YOU CONTROL YOUR DATA</span><h2>Keep a copy. Pick up anywhere.</h2><p>${savingNote()} Browser data is shared by people using the same browser profile. Clearing site data, private browsing, or switching devices can remove or separate your progress. There is no automatic cloud sync.</p><div class="actions"><button class="button secondary" id="export-progress">Export progress JSON ↓</button><label class="button secondary import-label">Restore a backup<input id="import-progress" type="file" accept="application/json,.json"></label></div><p class="micro-note">JSON backups contain assessment answers, progress, and badge eligibility, but no attachment files. Restoring replaces this browser’s current learning data after you confirm.</p><div id="import-preview" role="status"></div><details class="clear-progress"><summary>Clear this site’s saved progress</summary><p>This removes assessment answers, the saved plan, completion marks, and resume links from this browser. Attached files are kept and can be removed separately in the evidence section. Export a backup first if you want to keep your progress.</p><button class="button secondary" id="clear-progress">Clear assessment and progress</button></details></section>`;
   document.querySelector('#export-progress').addEventListener('click',()=>{
     downloadFile('industrial-ai-progress.json',JSON.stringify(progress,null,2),'application/json');notify('Progress backup downloaded.');
   });
@@ -298,7 +333,7 @@ main.addEventListener('click',event=>{
   const key=button.dataset.course||button.dataset.step||button.dataset.check;
   const value=!progress[field][key];
   saveProgress(state=>{if(value)state[field][key]=true;else delete state[field][key];if(field==='completedSteps')state.lastPathId=key.split(':')[0];});
-  if(location.hash==='#progress'){progressPage();main.focus({preventScroll:true});}
+  if(location.hash==='#progress'){progressPage();mountAttachments();main.focus({preventScroll:true});}
   else {
     // Preserve focus and filter/scroll position when checking a course or study block.
     button.classList.toggle('is-complete',value);button.setAttribute('aria-pressed',String(value));
@@ -307,7 +342,9 @@ main.addEventListener('click',event=>{
     button.setAttribute('aria-label',`${value?'Undo completion of':'Mark complete:'} ${label}`);
     document.querySelectorAll('[data-path-progress]').forEach(el=>{const p=pathById(el.dataset.pathProgress);el.outerHTML=pathProgress(p);});
   }
-  refreshContinuePanels();
+  refreshContinuePanels();refreshRewards();
+  if(value && field==='completedCourses'){celebrateCompletion({title:'Resource complete!',detail:courseById(key).title+' · Badge earned',glyph:'✓'});return;}
+  if(value && field==='completedSteps'){const path=pathById(key.split(':')[0]);if(path.steps.every(step=>progress.completedSteps[stepKey(path,step)])){celebrateCompletion({title:'All study blocks complete!',detail:'Ready for the '+path.title+' exit check.',glyph:'✦'});return;}}
   notify(store.status==='ready'?(value?'Progress saved. Nice work!':'Completion undone.'):'Updated for this visit. Browser saving is unavailable.');
 });
 
@@ -318,6 +355,8 @@ try{
   data=await response.json();md=createMarkdown(data);
   store=createProgressStore(data,()=>window.localStorage,storageKey(location.pathname));
   progress=store.load();restoreAssessment();
+  evidenceStore=createEvidenceStore(data,()=>window.indexedDB,storageKey(location.pathname)+':evidence');
+  try{evidenceChannel=new BroadcastChannel(storageKey(location.pathname)+':evidence');}catch{/* Optional cross-tab file updates. */}
   if(!location.hash && progress.lastRoute!=='#home')history.replaceState(null,'',progress.lastRoute);
   render();window.addEventListener('hashchange',render);
   window.addEventListener('storage',event=>{

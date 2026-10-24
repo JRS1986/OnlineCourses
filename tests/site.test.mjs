@@ -116,3 +116,21 @@ test('static entry assets are relative for repository-subpath hosting',()=>{
 });
 
 import './progress.test.mjs';
+
+
+test('published assets use one build version throughout the module graph',()=>{
+  const root=new URL('../_site/',import.meta.url);
+  const manifest=JSON.parse(readFileSync(new URL('asset-manifest.json',root)));
+  const read=name=>readFileSync(new URL(name,root),'utf8');
+  const index=read('index.html');
+  for(const name of ['app.js','styles.css','favicon.svg'])assert.ok(index.includes(`./${manifest.assets[name]}`));
+  for(const [source,built] of Object.entries(manifest.assets)){
+    assert.ok(built.includes(manifest.version));
+    const content=read(built);
+    if(source.endsWith('.js'))for(const [,relative] of content.matchAll(/['"]\.\/([^'"]+)['"]/g)){
+      assert.ok(relative.includes(manifest.version),`${built}: unversioned ${relative}`);
+      assert.ok(read(relative).length);
+    }
+  }
+  assert.deepEqual(JSON.parse(read(manifest.assets['data.json'])),data);
+});

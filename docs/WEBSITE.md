@@ -65,7 +65,7 @@ npm run preview
 
 Open `http://127.0.0.1:4173/`. The preview serves the generated `_site/` folder; run `npm run build` after source changes. `npm test` builds it automatically. Opening `web/index.html` directly from disk will not work because the browser must fetch the generated curriculum data over HTTP.
 
-The build script recreates `_site/`, which is generated output and ignored by Git. Hash routes and relative asset URLs support repository subpaths and direct links such as `https://jrs1986.github.io/OnlineCourses/#paths/D3` without server rewrites.
+The build script recreates `_site/`, which is generated output and ignored by Git. Published modules, styles, and curriculum data use filenames containing the build version so returning browsers do not mix cached assets from different releases. Hash routes and relative asset URLs support repository subpaths and direct links such as `https://jrs1986.github.io/OnlineCourses/#paths/D3` without server rewrites.
 
 ## Publish updates
 

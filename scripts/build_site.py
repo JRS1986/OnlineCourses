@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build a dependency-free Pages artifact from the maintained guide and assessment."""
 import json
+import hashlib
 import re
 import shutil
 from dataclasses import asdict
@@ -93,7 +94,22 @@ def main():
     if OUTPUT.exists():
         shutil.rmtree(OUTPUT)
     shutil.copytree(ROOT / 'web', OUTPUT)
-    (OUTPUT / 'data.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\n')
+    payload = json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\n'
+    (OUTPUT / 'data.json').write_text(payload)
+    # Version the entire module graph, styles, and curriculum together. Old
+    # browser caches must not mix a fresh entry module with stale dependencies.
+    sources = {path.name: path.read_text() for path in sorted((ROOT / 'web').iterdir()) if path.is_file()}
+    version = hashlib.sha256((json.dumps(sources, sort_keys=True) + payload).encode()).hexdigest()[:12]
+    names = {name: f'{Path(name).stem}.{version}{Path(name).suffix}' for name in [*sources, 'data.json'] if name != 'index.html'}
+    def version_links(text):
+        for old, new in names.items():
+            text = text.replace('./' + old, './' + new)
+        return text
+    for name, source in sources.items():
+        target = 'index.html' if name == 'index.html' else names[name]
+        (OUTPUT / target).write_text(version_links(source))
+    (OUTPUT / names['data.json']).write_text(payload)
+    (OUTPUT / 'asset-manifest.json').write_text(json.dumps({'version': version, 'assets': names}) + '\n')
     (OUTPUT / '.nojekyll').touch()
     print(f'Built {OUTPUT}: {len(data["paths"])} paths, {len(data["courses"])} resources, {len(data["questions"])} questions.')
 

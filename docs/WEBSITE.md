@@ -12,7 +12,8 @@ The [Industrial AI field guide](https://jrs1986.github.io/OnlineCourses/) runs i
 - Resume an assessment after closing the tab, mark resources and study blocks complete, and manage them under **My progress**.
 - Earn resource badges, milestones at 1/5/10 completed resources, and path badges after confirming the exit check.
 - Attach certificates or completion evidence as PDFs, PNGs, JPEGs, or WebP images; preview images and download or remove files.
-- Export or restore a JSON progress backup, or clear this site’s local learning data.
+- Move assessment answers, the saved plan, progress, badges, and all attachments between devices with a full `.iai-backup` export and reviewed restore.
+- Export or restore a smaller progress-only JSON backup, or clear this site’s local learning data.
 - Download a Markdown plan or use the browser's Print / Save PDF option.
 - Use the teaching kit, practice briefs, and learning record directly in the browser.
 
@@ -22,7 +23,7 @@ Motion follows the device's reduced-motion preference. The **Motion on/off** but
 
 The assessment runs in the browser. Answers, the current question, study preferences, the most recent completed plan, resource completion, study-block completion, path exit-check confirmations, and resume links are saved automatically in local storage. Opening the site without a destination returns to the last page; explicit shared links still open their requested destination. A path-specific assessment link resumes an existing draft for that goal. Retaking an assessment keeps course and study-block progress, and the previous plan remains available until a new plan is completed.
 
-**My progress** provides a JSON backup export, a file-based restore preview with confirmation, and a clear-data control. Progress JSON backups contain the learner's assessment answers and badge eligibility, but not attachment files. A restore replaces this browser's learning data. Clearing assessment and progress removes only this guide's namespaced progress record, leaving attachments and other sites' data alone. Attachments have separate removal controls. Course marks represent the material the learner intended to study; path blocks and exit checks remain separate.
+**My progress** provides a full backup export with attachments, a smaller progress-only JSON option, restore previews with confirmation, and separate progress/file clearing controls. Progress JSON backups contain the learner's assessment answers and badge eligibility, but not attachment files. A restore replaces this browser's learning data. Clearing assessment and progress resets this guide's learning data, leaving attachments and other sites' data alone. A completed-restore marker may remain to prevent replaying an interrupted recovery. Attachments have separate removal controls. Course marks represent the material the learner intended to study; path blocks and exit checks remain separate.
 
 Local data belongs to this browser profile and device. Other people using that profile can see it. Private browsing, clearing site data, browser policies, or a device change can remove or separate saved progress; backups can be transferred manually. There is no account or automatic cloud sync. If storage is blocked or full, a persistent notice explains that changes are only available for the current visit and can be exported.
 
@@ -48,9 +49,24 @@ Completion celebrations last a few seconds, do not steal focus, and can be dismi
 
 The evidence section on each course, path, and **My progress** stores attachments in a namespaced **IndexedDB** database on this browser and device. The accepted formats are PDF, PNG, JPEG, and WebP, detected from their signatures. Limits are 10 MB per file, 50 files, and 100 MB total; the browser may impose a smaller available quota. Files are not sent to a server, analysed, or used to verify an achievement. Attaching a file does not automatically complete anything.
 
-Images can be previewed. All files can be downloaded in their original bytes or removed, with a separate control for removing all attachments. PDFs are downloaded rather than embedded in the page. Keep the original files: **progress JSON exports and restores exclude attachments**, and an imported progress backup leaves existing files untouched. Download attachments individually when moving devices. Clearing browser site data can erase both progress and files; the in-app progress reset keeps files and the attachment-removal controls keep progress.
+Images can be previewed. All files can be downloaded in their original bytes or removed, with a separate control for removing all attachments. PDFs are downloaded rather than embedded in the page. Keep a backup or the original files: **progress-only JSON exports and restores exclude attachments**, and an imported progress backup leaves existing files untouched. Use a full backup when moving devices, or download attachments individually. Clearing browser site data can erase both progress and files; the in-app progress reset keeps files and the attachment-removal controls keep progress.
 
 If browser file storage is blocked or full, the attachment area reports the failure and never claims that a file was saved. Ordinary course and assessment progress continues to work independently. The file list refreshes across tabs where the browser supports BroadcastChannel.
+
+## Full backups and moving devices
+
+1. Open **My progress → Download full backup** on the source device.
+2. Transfer the resulting `industrial-ai-full-YYYY-MM-DD.iai-backup` file to the destination device.
+3. Open this guide there, choose **My progress → Restore full backup**, and select the file.
+4. Review the counts, export date, included certificate filenames, and replacement notice. Choose **Restore everything from this backup** to apply it, or **Cancel** to leave the current data untouched.
+
+A full backup contains assessment answers and preferences, the saved learning plan, resume links, course and study-block completion, path exit-check confirmations, earned badge IDs, and original attachment bytes with their names, dates, and course/path associations. Badges are recalculated from validated progress on restore; a claimed badge ID cannot grant an achievement. As with older progress backups, changed questions or curriculum can reset stale answers, blocks, and path confirmations.
+
+Restoring replaces the destination's learning data and **all** attachments; it does not merge. Download the destination's own full backup first if you want to keep that data. Validation and the preview do not write anything. Corrupt, truncated, unsupported, oversized, or unrelated files are rejected before restoration. The same 50-file, 10 MB-per-file, 100 MB-total limits apply, plus up to 1 MB of metadata. Older JSON backups still work through **Progress-only JSON backup** and leave files untouched.
+
+The versioned `.iai-backup` container keeps raw file bytes without base64 expansion. It includes a bounded JSON manifest and SHA-256 checksums for every attachment. This detects damaged files; it is not a signature or credential verification. It is not encrypted: the file contains assessment answers and certificate documents, so keep it private. Export and import run entirely in the browser with no account or server transfer.
+
+Attachment replacement and a progress-recovery journal are written in one IndexedDB transaction. A failed transaction preserves the previous attachments and progress. Once committed, the progress snapshot is copied to local storage; if the tab closes in between, the next visit finishes the restore. A persisted restore ID prevents a leftover journal from overwriting newer work. If progress storage is blocked, the staged snapshot remains in IndexedDB; enable storage and reload to finish. Browser data can still be cleared or evicted, so keep the downloaded backup separately.
 
 ## Maintain the content
 
@@ -65,6 +81,7 @@ The website is generated from the same sources as the repository guide:
 | Guides, practice briefs, and teaching material | Markdown files in this directory |
 | Badges and path-completion rules | [Achievements](../web/achievements.js) |
 | Certificate and screenshot storage | [Evidence storage](../web/evidence.js) |
+| Full backup format and recovery | [Full backup](../web/backup.js) |
 | Local saving, validation, and recovery | [Progress storage](../web/progress.js) |
 | Visual design and browser interactions | Files in `web/` |
 

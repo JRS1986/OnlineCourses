@@ -1,6 +1,8 @@
 import {earnedBadges, pathComplete} from './achievements.js';
 import {createEvidenceStore} from './evidence.js';
 import {evidenceSection, mountEvidence} from './evidence-ui.js';
+import {recoverFullRestore} from './backup.js';
+import {fullBackupControls,mountFullBackup} from './backup-ui.js';
 import {freshAssessment, createProgressStore, storageKey, stepKey, normalizeProgress, nextLearningStep, pathSignature} from './progress.js';
 import {brainExplorer, enhanceView, installMotionControl, celebrateCompletion} from './experience.js';
 import {escapeHTML as e, createMarkdown, slug} from './markdown.js';
@@ -13,6 +15,7 @@ const groups = ['All paths','AI at work','Developing AI','Foundations','Teaching
 installMotionControl();
 let data, md, store, progress, evidenceStore, evidenceChannel;
 let evidenceCleanup=()=>{};
+let backupCleanup=()=>{};
 let assessment = freshAssessment();
 let result = null;
 let toastTimer;
@@ -196,6 +199,7 @@ function render({remember=true}={}){
   const hash=location.hash.slice(1)||'home';
   if(hash==='main'){main.focus();return;}
   evidenceCleanup();
+  backupCleanup();
   const [route,query='']=hash.split('?');const [page,id]=route.split('/');const params=new URLSearchParams(query);
   document.title='Industrial AI — Learning field guide';
   const active=page==='guide'?({teaching:'teaching',research:'research','industrial-ai':'map'}[id]||''):page;
@@ -300,10 +304,11 @@ function resumePanel(){
   return `${continuePanel()}<section class="resume-panel"><div><span class="eyebrow">YOUR LEARNING, PICKED UP RIGHT HERE</span><h2>Welcome back.</h2><p>${Object.keys(progress.completedCourses).length} resources completed · ${Object.keys(progress.completedSteps).length} study blocks completed</p></div><div class="actions">${assessment.goal?'<a class="button secondary small" href="#assessment">Resume assessment →</a>':''}${result?'<a class="button secondary small" href="#plan">Open my plan →</a>':''}<a class="button small" href="#progress">My progress ↗</a></div></section>`;
 }
 function progressPage(){
+  backupCleanup();
   const completed=data.courses.filter(c=>progress.completedCourses[c.id]);
   const started=data.paths.filter(p=>p.steps.some(s=>progress.completedSteps[stepKey(p,s)]) || p.id===result?.settings.goal);
   const answered=Object.keys(assessment.answers).length;
-  main.innerHTML=`${heading('YOUR PERSONAL LEARNING LOG','Small steps. Real progress.','Your assessment, plan, and completion marks are saved on this browser and device. No account needed.')}<div class="progress-summary"><div><strong>${completed.length}</strong><span>resources complete</span></div><div><strong>${Object.keys(progress.completedSteps).length}</strong><span>study blocks complete</span></div><div><strong>${answered}</strong><span>assessment answers saved</span></div></div>${continuePanel()}<div class="actions progress-links"><a class="button secondary small" href="#assessment">${assessment.goal?'Resume assessment':'Find my path'} →</a>${result?'<a class="button secondary small" href="#plan">Open saved plan →</a>':''}${progress.lastLearningRoute?`<a class="text-link" href="${e(progress.lastLearningRoute)}">Last learning page ↗</a>`:''}</div>${badgeShelf()}<div class="section-head"><h2>Your learning paths</h2><a class="text-link" href="#paths">Explore paths →</a></div><div class="cards">${started.length?started.map(pathCard).join(''):empty('Start with one study block.','Open a path and tick off each study block as you finish it.')}</div><p class="micro-note">Resource marks and study blocks are tracked separately. They record your progress; they do not replace a path’s exit check.</p><div class="section-head"><h2>Completed resources</h2><a class="text-link" href="#courses">Browse the library →</a></div><div class="library-grid">${completed.length?completed.map(courseCard).join(''):empty('Your first completion goes here.','Use “Mark complete” on any course or reading when you finish the material you intended to study.')}</div>${evidenceSection(data)}<section class="local-data-panel"><span class="eyebrow">YOU CONTROL YOUR DATA</span><h2>Keep a copy. Pick up anywhere.</h2><p>${savingNote()} Browser data is shared by people using the same browser profile. Clearing site data, private browsing, or switching devices can remove or separate your progress. There is no automatic cloud sync.</p><div class="actions"><button class="button secondary" id="export-progress">Export progress JSON ↓</button><label class="button secondary import-label">Restore a backup<input id="import-progress" type="file" accept="application/json,.json"></label></div><p class="micro-note">JSON backups contain assessment answers, progress, and badge eligibility, but no attachment files. Restoring replaces this browser’s current learning data after you confirm.</p><div id="import-preview" role="status"></div><details class="clear-progress"><summary>Clear this site’s saved progress</summary><p>This removes assessment answers, the saved plan, completion marks, and resume links from this browser. Attached files are kept and can be removed separately in the evidence section. Export a backup first if you want to keep your progress.</p><button class="button secondary" id="clear-progress">Clear assessment and progress</button></details></section>`;
+  main.innerHTML=`${heading('YOUR PERSONAL LEARNING LOG','Small steps. Real progress.','Your assessment, plan, and completion marks are saved on this browser and device. No account needed.')}<div class="progress-summary"><div><strong>${completed.length}</strong><span>resources complete</span></div><div><strong>${Object.keys(progress.completedSteps).length}</strong><span>study blocks complete</span></div><div><strong>${answered}</strong><span>assessment answers saved</span></div></div>${continuePanel()}<div class="actions progress-links"><a class="button secondary small" href="#assessment">${assessment.goal?'Resume assessment':'Find my path'} →</a>${result?'<a class="button secondary small" href="#plan">Open saved plan →</a>':''}${progress.lastLearningRoute?`<a class="text-link" href="${e(progress.lastLearningRoute)}">Last learning page ↗</a>`:''}</div>${badgeShelf()}<div class="section-head"><h2>Your learning paths</h2><a class="text-link" href="#paths">Explore paths →</a></div><div class="cards">${started.length?started.map(pathCard).join(''):empty('Start with one study block.','Open a path and tick off each study block as you finish it.')}</div><p class="micro-note">Resource marks and study blocks are tracked separately. They record your progress; they do not replace a path’s exit check.</p><div class="section-head"><h2>Completed resources</h2><a class="text-link" href="#courses">Browse the library →</a></div><div class="library-grid">${completed.length?completed.map(courseCard).join(''):empty('Your first completion goes here.','Use “Mark complete” on any course or reading when you finish the material you intended to study.')}</div>${evidenceSection(data)}<section class="local-data-panel"><span class="eyebrow">YOU CONTROL YOUR DATA</span><h2>Keep a copy. Pick up anywhere.</h2><p>${savingNote()} Browser data is shared by people using the same browser profile. Clearing site data, private browsing, or switching devices can remove or separate your progress. There is no automatic cloud sync.</p>${fullBackupControls()}<details class="lightweight-backup"><summary>Progress-only JSON backup (without certificate files)</summary><div class="actions"><button class="button secondary" id="export-progress">Export progress JSON ↓</button><label class="button secondary import-label">Restore progress JSON<input id="import-progress" type="file" accept="application/json,.json"></label></div><p class="micro-note">JSON backups contain assessment answers, progress, and badge eligibility, but no attachment files. Restoring replaces this browser’s current learning data after you confirm.</p><div id="import-preview" role="status"></div></details><details class="clear-progress"><summary>Clear this site’s saved progress</summary><p>This removes assessment answers, the saved plan, completion marks, and resume links from this browser. Attached files are kept and can be removed separately in the evidence section. Export a backup first if you want to keep your progress.</p><button class="button secondary" id="clear-progress">Clear assessment and progress</button></details></section>`;
   document.querySelector('#export-progress').addEventListener('click',()=>{
     downloadFile('industrial-ai-progress.json',JSON.stringify(progress,null,2),'application/json');notify('Progress backup downloaded.');
   });
@@ -323,6 +328,7 @@ function progressPage(){
   document.querySelector('#clear-progress').addEventListener('click',()=>{
     progress=store.clear();restoreAssessment();render({remember:false});notify(store.status==='ready'?'Local learning data cleared.':'This visit was reset, but browser storage could not be cleared. Check your browser’s site-data settings.');
   });
+  backupCleanup=mountFullBackup(main,{data,progressStore:store,evidenceStore,channel:evidenceChannel,notify,onRestored:()=>{progress=store.state;restoreAssessment();render({remember:false});}});
 }
 function downloadFile(name,text,type){
   const url=URL.createObjectURL(new Blob([text],{type}));const link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -356,6 +362,7 @@ try{
   store=createProgressStore(data,()=>window.localStorage,storageKey(location.pathname));
   progress=store.load();restoreAssessment();
   evidenceStore=createEvidenceStore(data,()=>window.indexedDB,storageKey(location.pathname)+':evidence');
+  try{await recoverFullRestore(evidenceStore,store);progress=store.state;restoreAssessment();}catch{/* Attachments report unavailable file storage locally; ordinary progress still works. */}
   try{evidenceChannel=new BroadcastChannel(storageKey(location.pathname)+':evidence');}catch{/* Optional cross-tab file updates. */}
   if(!location.hash && progress.lastRoute!=='#home')history.replaceState(null,'',progress.lastRoute);
   render();window.addEventListener('hashchange',render);

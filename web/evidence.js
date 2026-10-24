@@ -35,24 +35,24 @@ export function createEvidenceStore(data,getIndexedDB,dbName){
   function open(){
     if(!opening)opening=new Promise((resolve,reject)=>{
       let request,blocked=false;
-      try{request=getIndexedDB().open(dbName,1);}catch{reject(new Error('Browser file storage is unavailable. Your progress still works; keep the original file.'));return;}
-      request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains('files'))request.result.createObjectStore('files',{keyPath:'id'});};
+      try{request=getIndexedDB().open(dbName,2);}catch{reject(new Error('Browser file storage is unavailable. Your progress still works; keep the original file.'));return;}
+      request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains('files'))request.result.createObjectStore('files',{keyPath:'id'});if(!request.result.objectStoreNames.contains('restore'))request.result.createObjectStore('restore');};
       request.onsuccess=()=>{const db=request.result;if(blocked){db.close();return;}db.onversionchange=()=>{db.close();opening=null;};resolve(db);};
       request.onerror=()=>reject(new Error('Browser file storage is unavailable. Your progress still works; keep the original file.'));
       request.onblocked=()=>{blocked=true;reject(new Error('Close other tabs of this guide and try attaching the file again.'));};
     }).catch(error=>{opening=null;throw error;});
     return opening;
   }
-  async function transact(mode,operation){
+  async function transact(mode,operation,names=['files']){
     const db=await open();
     return new Promise((resolve,reject)=>{
       let result,reason;
-      const tx=db.transaction('files',mode),files=tx.objectStore('files');
+      const tx=db.transaction(names,mode),files=tx.objectStore(names[0]);
       const fail=error=>{reason=error;tx.abort();};
       tx.oncomplete=()=>resolve(result);
       tx.onabort=()=>reject(reason||new Error('The browser could not save this change. Storage may be full or disabled; keep your original files.'));
       tx.onerror=()=>{}; // onabort reports the failed transaction once.
-      try{operation(files,value=>{result=value;},fail);}catch(error){fail(error);}
+      try{operation(files,value=>{result=value;},fail,tx);}catch(error){fail(error);}
     });
   }
   const list=()=>transact('readonly',(files,done)=>{const req=files.getAll();req.onsuccess=()=>done(req.result.map(({blob,...metadata})=>metadata).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)));});
@@ -68,5 +68,13 @@ export function createEvidenceStore(data,getIndexedDB,dbName){
   };
   const remove=id=>transact('readwrite',(files,done)=>{files.delete(id);done(true);});
   const clear=()=>transact('readwrite',(files,done)=>{files.clear();done(true);});
-  return {list,get,add,remove,clear};
+  const all=()=>transact('readonly',(files,done)=>{const req=files.getAll();req.onsuccess=()=>done(req.result);});
+  const stageRestore=snapshot=>transact('readwrite',(files,done,fail,tx)=>{
+    files.clear();for(const file of snapshot.files)files.add(file);
+    const pending={id:crypto.randomUUID(),progress:snapshot.progress};
+    tx.objectStore('restore').put(pending,'pending');done(pending.id);
+  },['files','restore']);
+  const pendingRestore=()=>transact('readonly',(journal,done)=>{const req=journal.get('pending');req.onsuccess=()=>done(req.result);},['restore']);
+  const finishRestore=id=>transact('readwrite',(journal,done)=>{const req=journal.get('pending');req.onsuccess=()=>{if(req.result?.id===id)journal.delete('pending');done(true);};},['restore']);
+  return {list,get,add,remove,clear,all,stageRestore,pendingRestore,finishRestore};
 }

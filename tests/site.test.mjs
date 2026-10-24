@@ -136,3 +136,4 @@ test('published assets use one build version throughout the module graph',()=>{
 });
 
 import './rewards.test.mjs';
+import './backup.test.mjs';

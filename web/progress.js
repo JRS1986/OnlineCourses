@@ -61,6 +61,7 @@ export function normalizeProgress(data, raw) {
   const learning=safeRoute(data,raw.lastLearningRoute);
   state.lastLearningRoute=/^#(?:paths|courses|guide)\//.test(learning)?learning:'';
   if(typeof raw.updatedAt==='string' && Number.isFinite(Date.parse(raw.updatedAt)))state.updatedAt=raw.updatedAt;
+  if(typeof raw.restoreId==='string' && /^[a-zA-Z0-9_-]{1,80}$/.test(raw.restoreId))state.restoreId=raw.restoreId;
   return state;
 }
 
@@ -89,12 +90,21 @@ export function createProgressStore(data, getStorage, key) {
     return state;
   }
   function clear(){
+    const restoreId=state.restoreId;
     state=blankProgress(data);
-    try{getStorage().removeItem(key);status='ready';}catch{status='unavailable';}
+    // Keep only a completed-restore marker if journal cleanup was interrupted.
+    // Otherwise a later recovery could resurrect the progress just cleared.
+    if(restoreId)state.restoreId=restoreId;
+    try{if(restoreId)getStorage().setItem(key,JSON.stringify(state));else getStorage().removeItem(key);status='ready';}catch{status='unavailable';}
     return state;
   }
   function refresh(){status='ready';load();return state;}
-  return {load,update,clear,refresh,get status(){return status;},get state(){return state;}};
+  function replace(next){
+    state=normalizeProgress(data,next);status='ready';
+    try{getStorage().setItem(key,JSON.stringify(state));}catch{status='unavailable';}
+    return state;
+  }
+  return {load,update,clear,refresh,replace,get status(){return status;},get state(){return state;}};
 }
 
 // A course mark does not complete a path's exercises. Follow the plan's ordered

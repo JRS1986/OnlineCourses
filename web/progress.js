@@ -11,7 +11,7 @@ function fingerprint(value) {
 export const assessmentVersion = data => fingerprint([data.questions, data.paths.map(p=>[p.id,p.domains])]);
 export const stepKey = (path, step) => `${path.id}:${step.order}:${fingerprint([step.text,step.hours])}`;
 export const storageKey = pathname => `industrial-ai:${pathname.replace(/index\.html$/, '').replace(/\/$/, '') || '/'}:learning:v1`;
-export const blankProgress = data => ({version:STORAGE_VERSION, questionVersion:assessmentVersion(data), draft:freshAssessment(), savedPlan:null, completedCourses:{}, completedSteps:{}, lastRoute:'#home', lastLearningRoute:'', updatedAt:null});
+export const blankProgress = data => ({version:STORAGE_VERSION, questionVersion:assessmentVersion(data), draft:freshAssessment(), savedPlan:null, completedCourses:{}, completedSteps:{}, completedChecks:{}, lastPathId:'', lastRoute:'#home', lastLearningRoute:'', updatedAt:null});
 
 export function safeRoute(data, route) {
   if (typeof route !== 'string' || route.length>1500) return '#home';
@@ -53,6 +53,8 @@ export function normalizeProgress(data, raw) {
   }
   for(const c of data.courses)if(raw.completedCourses?.[c.id]===true)state.completedCourses[c.id]=true;
   for(const path of data.paths)for(const step of path.steps){const key=stepKey(path,step);if(raw.completedSteps?.[key]===true)state.completedSteps[key]=true;}
+  if(raw.completedChecks?.['python-utility']===true)state.completedChecks['python-utility']=true;
+  if(data.paths.some(p=>p.id===raw.lastPathId))state.lastPathId=raw.lastPathId;
   state.lastRoute=safeRoute(data,raw.lastRoute);
   const learning=safeRoute(data,raw.lastLearningRoute);
   state.lastLearningRoute=/^#(?:paths|courses|guide)\//.test(learning)?learning:'';
@@ -91,4 +93,33 @@ export function createProgressStore(data, getStorage, key) {
   }
   function refresh(){status='ready';load();return state;}
   return {load,update,clear,refresh,get status(){return status;},get state(){return state;}};
+}
+
+// A course mark does not complete a path's exercises. Follow the plan's ordered
+// prerequisites, then the first unchecked study block within each path.
+export function nextLearningStep(data, state, pathId = '') {
+  const findPath = id => data.paths.find(p=>p.id===id);
+  const nextInPath = path => {
+    const step=path.steps.find(s=>!state.completedSteps[stepKey(path,s)]);
+    return step ? {kind:'step', pathId:path.id, order:step.order, title:`${path.title} · study block ${step.order}`, href:`#paths/${path.id}?step=${step.order}`} : null;
+  };
+  const finished = path => ({kind:'complete',pathId:path.id,title:`${path.title}: all study blocks complete`,href:`#paths/${path.id}?step=exit`});
+  if(pathId){const path=findPath(pathId);return path ? nextInPath(path)||finished(path) : null;}
+  if(state.savedPlan){
+    const plan=makePlan(data,state.savedPlan,state.savedPlan.answers);
+    for(const block of plan.blocks){
+      const path=findPath(block.id);
+      if(path){const next=nextInPath(path);if(next)return next;}
+      else if(block.id==='practice'){
+        if(!state.completedChecks?.['python-utility'])return {kind:'practice',title:'Confirm your Python skills in practice',href:'#guide/practice?section=b1-sensor-data-contract&check=python-utility'};
+      }else if(!state.completedCourses[block.id]){
+        const course=data.courses.find(c=>c.id===block.id);
+        return {kind:'course',courseId:course.id,title:`Prerequisite: ${course.title}`,href:`#courses/${course.id}`};
+      }
+    }
+    return finished(findPath(plan.settings.goal));
+  }
+  const recentId=state.lastLearningRoute?.match(/^#paths\/([^?]+)/)?.[1];
+  const path=findPath(state.lastPathId)||findPath(recentId)||data.paths.find(p=>p.steps.some(s=>state.completedSteps[stepKey(p,s)]))||findPath(state.draft?.goal);
+  return path ? nextInPath(path)||finished(path) : null;
 }

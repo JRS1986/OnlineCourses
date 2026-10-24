@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {freshAssessment, blankProgress, normalizeDraft, normalizeProgress, createProgressStore, storageKey, stepKey} from '../web/progress.js';
+import {freshAssessment, blankProgress, normalizeDraft, normalizeProgress, createProgressStore, storageKey, stepKey, nextLearningStep} from '../web/progress.js';
 import {questionsFor, makePlan} from '../web/assessment.js';
 const data=JSON.parse(readFileSync(new URL('../_site/data.json',import.meta.url)));
 const key=storageKey('/OnlineCourses/');
@@ -92,4 +92,90 @@ test('JSON backups round-trip and clear removes only this guide’s record',()=>
 test('resume cannot skip earlier unanswered questions',()=>{
   const raw={...completedDraft('D3'),step:11};delete raw.answers[questionsFor(data,'D3')[2].id];
   assert.equal(normalizeDraft(data,raw).step,4);
+});
+
+
+test('continue learning finds the first unchecked block, including gaps and undo',()=>{
+  const state=blankProgress(data),path=data.paths.find(p=>p.id==='W2');
+  state.lastPathId=path.id;
+  assert.equal(nextLearningStep(data,state).href,'#paths/W2?step=1');
+  state.completedSteps[stepKey(path,path.steps[0])]=true;
+  state.completedSteps[stepKey(path,path.steps[2])]=true;
+  assert.equal(nextLearningStep(data,state).order,2);
+  state.completedSteps[stepKey(path,path.steps[1])]=true;
+  assert.equal(nextLearningStep(data,state).order,4);
+  delete state.completedSteps[stepKey(path,path.steps[0])];
+  assert.equal(nextLearningStep(data,state).order,1);
+});
+
+test('continue learning follows prerequisite paths before the chosen destination',()=>{
+  const state=blankProgress(data);
+  state.savedPlan={...freshAssessment('D1'),answers:Object.fromEntries(questionsFor(data,'D1').map(q=>[q.id,null]))};
+  state.lastPathId='W2';
+  assert.equal(nextLearningStep(data,state).pathId,'P1');
+  const prerequisite=data.paths.find(p=>p.id==='P1');
+  for(const step of prerequisite.steps)state.completedSteps[stepKey(prerequisite,step)]=true;
+  assert.equal(nextLearningStep(data,state).courseId,'C06');
+  state.completedCourses.C06=true;
+  assert.equal(nextLearningStep(data,state).pathId,'D1');
+  assert.equal(nextLearningStep(data,state,'W2').pathId,'W2');
+});
+
+test('course marks never silently complete path exercises',()=>{
+  const state=blankProgress(data);state.savedPlan=completedDraft('W2');
+  for(const c of data.courses)state.completedCourses[c.id]=true;
+  assert.equal(nextLearningStep(data,state).order,1);
+});
+
+test('a practice prerequisite can be completed and undone without blocking the destination',()=>{
+  const state=blankProgress(data);state.savedPlan=completedDraft('D3');
+  assert.equal(nextLearningStep(data,state).kind,'practice');
+  state.completedChecks['python-utility']=true;
+  assert.equal(nextLearningStep(data,state).pathId,'D3');
+  const clean=normalizeProgress(data,JSON.parse(JSON.stringify(state)));
+  assert.equal(nextLearningStep(data,clean).pathId,'D3');
+  delete state.completedChecks['python-utility'];
+  assert.equal(nextLearningStep(data,state).kind,'practice');
+});
+
+test('completed paths and plans lead to exit checks instead of restarting',()=>{
+  for(const path of data.paths){
+    const state=blankProgress(data);state.lastPathId=path.id;
+    for(const step of path.steps)state.completedSteps[stepKey(path,step)]=true;
+    assert.equal(nextLearningStep(data,state).kind,'complete');
+    assert.equal(nextLearningStep(data,state).href,`#paths/${path.id}?step=exit`);
+  }
+  const state=blankProgress(data);state.savedPlan={...completedDraft('D3'),evidence:true};
+  const goal=data.paths.find(p=>p.id==='D3');
+  for(const step of goal.steps)state.completedSteps[stepKey(goal,step)]=true;
+  assert.equal(nextLearningStep(data,state).kind,'complete');
+});
+
+test('learners without a saved plan can resume a recent or started path',()=>{
+  const state=blankProgress(data);
+  assert.equal(nextLearningStep(data,state),null);
+  state.lastLearningRoute='#paths/D2?step=3';
+  assert.equal(nextLearningStep(data,state).pathId,'D2');
+  state.lastLearningRoute='#courses/C11';
+  const path=data.paths.find(p=>p.id==='W4');state.completedSteps[stepKey(path,path.steps[0])]=true;
+  assert.equal(nextLearningStep(data,state).href,'#paths/W4?step=2');
+  state.lastPathId='W2';assert.equal(nextLearningStep(data,state).pathId,'W2');
+});
+
+test('older backups gain safe defaults for continuation fields',()=>{
+  const state=blankProgress(data);delete state.completedChecks;delete state.lastPathId;
+  const clean=normalizeProgress(data,state);
+  assert.deepEqual(clean.completedChecks,{});assert.equal(clean.lastPathId,'');
+  state.lastPathId='unknown';state.completedChecks={'python-utility':'yes',injected:true};
+  const invalid=normalizeProgress(data,state);
+  assert.deepEqual(invalid.completedChecks,{});assert.equal(invalid.lastPathId,'');
+});
+
+test('resuming after a curriculum edit returns to the changed block',()=>{
+  const state=blankProgress(data);state.lastPathId='W2';
+  const path=data.paths.find(p=>p.id==='W2');
+  for(const step of path.steps)state.completedSteps[stepKey(path,step)]=true;
+  const changed=structuredClone(data);changed.paths.find(p=>p.id==='W2').steps[1].text+=' Revised exercise.';
+  const clean=normalizeProgress(changed,state);
+  assert.equal(nextLearningStep(changed,clean).order,2);
 });

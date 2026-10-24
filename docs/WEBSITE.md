@@ -8,6 +8,7 @@ The [Industrial AI field guide](https://jrs1986.github.io/OnlineCourses/) runs i
 - Browse 11 learning paths and search/filter 45 courses and references.
 - Choose a goal, available time, practice access, and discussion language; answer relevant knowledge checks.
 - Receive an explained learning sequence with prerequisites, resource suggestions, and exit checks.
+- Use **Continue learning** on the home, plan, progress, or path page to jump to the next unfinished study block.
 - Resume an assessment after closing the tab, mark resources and study blocks complete, and manage them under **My progress**.
 - Export or restore a JSON progress backup, or clear this site’s local learning data.
 - Download a Markdown plan or use the browser's Print / Save PDF option.
@@ -28,6 +29,14 @@ The site contains no analytics, cookies, external font calls, account system, or
 Stored data and imported backups are versioned and validated. Unknown resource IDs and outdated study-block marks are discarded. If the assessment questions change, old drafts and plan snapshots are reset while resource and unchanged block completions are retained. Saved plans are recomputed from the answer snapshot, rather than trusting stored scores. Unreadable or unsupported saved records are left untouched; use the clear control to start fresh. Tabs on the same site synchronize through browser storage events.
 
 This is a formative learning aid, not an examination or an employee assessment. Correct answers are included in the static site data so feedback can work without a server. The result is not a competency certificate.
+
+## Continue learning
+
+On **My progress**, the home page, and the saved plan, **Continue learning** follows the recommended sequence in order: prerequisite paths, individual prerequisite courses, any practice check, and then the destination path. Within a path it opens and highlights the first unchecked study block, including an earlier gap if later blocks were completed out of order. Completing or undoing a block updates the target immediately. Direct step links work after a reload.
+
+A path page's button stays within that path. Without a saved plan, the general button uses the most recently visited path, then a started path or the draft assessment's chosen goal. With no selected path it invites the learner to choose one. When all study blocks are checked off, it offers the path's exit check rather than restarting or claiming certification.
+
+Course marks do not automatically complete a path's exercises. A stand-alone prerequisite course can be marked complete on its resource page. If the plan asks for a Python practice check, the linked B1 brief has a separate completion control that saves locally and can be undone. Old progress backups remain compatible; missing new fields start empty.
 
 ## Maintain the content
 

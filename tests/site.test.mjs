@@ -112,5 +112,7 @@ test('static entry assets are relative for repository-subpath hosting',()=>{
   const html=readFileSync(new URL('../_site/index.html',import.meta.url),'utf8');
   for(const [,asset] of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g))assert.ok(readFileSync(new URL(`../_site/${asset}`,import.meta.url)).length);
   assert.ok(!/<(?:script|link)[^>]+(?:src|href)="https?:/.test(html));
-  assert.ok(!readFileSync(new URL('../web/app.js',import.meta.url),'utf8').includes('localStorage'));
+  assert.ok(!readFileSync(new URL('../web/progress.js',import.meta.url),'utf8').includes('fetch('));
 });
+
+import './progress.test.mjs';

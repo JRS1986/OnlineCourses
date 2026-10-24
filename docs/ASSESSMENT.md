@@ -1,6 +1,6 @@
 # Initial assessment and quick-start interview
 
-**Browser version:** [Find my learning path](https://jrs1986.github.io/OnlineCourses/#assessment). No installation or Python required; download the resulting plan to keep it.
+**Browser version:** [Find my learning path](https://jrs1986.github.io/OnlineCourses/#assessment). No installation or Python required. Answers and the plan save locally in this browser; use **My progress** to resume, export, or clear them.
 
 [Start](../README.md) · [Industrial AI map](INDUSTRIAL_AI.md) · [Paths](LEARNING_PATHS.md) · [Catalogue](CATALOG.md)
 

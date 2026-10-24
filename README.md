@@ -10,9 +10,9 @@ A curated learning guide for colleagues at Festo, engineering teams, and univers
 
 1. Open the **[interactive Industrial AI field guide](https://jrs1986.github.io/OnlineCourses/)** and choose **Find my path**. The assessment runs in your browser—no Python, installation, or account required.
 2. Browse the learning paths and course library, or follow your recommended sequence, including prerequisite gaps.
-3. Complete one [practice brief](docs/PRACTICE.md) and share a [learning record](templates/LEARNING_RECORD.md) with a peer. Download your learning plan or print it to PDF before closing the tab.
+3. Complete one [practice brief](docs/PRACTICE.md) and share a [learning record](templates/LEARNING_RECORD.md) with a peer. Mark courses and study blocks complete, then return to **My progress** to continue. Export a progress backup or print your learning plan to PDF whenever you want.
 
-Assessment answers stay in the browser tab and are not saved or uploaded. The recommendation is a transparent study suggestion, not a validated exam or a personnel assessment.
+Assessment answers, learning plans, completion marks, and resume links are saved locally in this browser. They are never uploaded by the guide. You can export, restore, or clear them under **My progress**; there is no automatic sync between browsers or devices. The recommendation is a transparent study suggestion, not a validated exam or a personnel assessment.
 
 The **[written interview](docs/ASSESSMENT.md)** and optional offline questionnaire remain available:
 

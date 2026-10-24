@@ -8,6 +8,8 @@ The [Industrial AI field guide](https://jrs1986.github.io/OnlineCourses/) runs i
 - Browse 11 learning paths and search/filter 45 courses and references.
 - Choose a goal, available time, practice access, and discussion language; answer relevant knowledge checks.
 - Receive an explained learning sequence with prerequisites, resource suggestions, and exit checks.
+- Resume an assessment after closing the tab, mark resources and study blocks complete, and manage them under **My progress**.
+- Export or restore a JSON progress backup, or clear this site’s local learning data.
 - Download a Markdown plan or use the browser's Print / Save PDF option.
 - Use the teaching kit, practice briefs, and learning record directly in the browser.
 
@@ -15,7 +17,15 @@ Motion follows the device's reduced-motion preference. The **Motion on/off** but
 
 ## Privacy and persistence
 
-The assessment runs in the browser. Answers and the current plan remain in memory in that tab; reloading or closing the tab clears them. Download the plan to keep it. The site contains no analytics, cookies, local storage, external font calls, account system, or assessment-upload endpoint. GitHub Pages still handles ordinary hosting requests; opening an external resource takes the learner to that provider.
+The assessment runs in the browser. Answers, the current question, study preferences, the most recent completed plan, resource completion, study-block completion, and resume links are saved automatically in local storage. Opening the site without a destination returns to the last page; explicit shared links still open their requested destination. A path-specific assessment link resumes an existing draft for that goal. Retaking an assessment keeps course and study-block progress, and the previous plan remains available until a new plan is completed.
+
+**My progress** provides a JSON backup export, a file-based restore preview with confirmation, and a clear-data control. Backups contain the learner's assessment answers. A restore replaces this browser's learning data. Clearing removes only this guide's namespaced record, leaving other sites' data alone. Course marks represent the material the learner intended to study; path blocks and exit checks remain separate.
+
+Local data belongs to this browser profile and device. Other people using that profile can see it. Private browsing, clearing site data, browser policies, or a device change can remove or separate saved progress; backups can be transferred manually. There is no account or automatic cloud sync. If storage is blocked or full, a persistent notice explains that changes are only available for the current visit and can be exported.
+
+The site contains no analytics, cookies, external font calls, account system, or assessment-upload endpoint. GitHub Pages still handles ordinary hosting requests; opening an external resource takes the learner to that provider.
+
+Stored data and imported backups are versioned and validated. Unknown resource IDs and outdated study-block marks are discarded. If the assessment questions change, old drafts and plan snapshots are reset while resource and unchanged block completions are retained. Saved plans are recomputed from the answer snapshot, rather than trusting stored scores. Unreadable or unsupported saved records are left untouched; use the clear control to start fresh. Tabs on the same site synchronize through browser storage events.
 
 This is a formative learning aid, not an examination or an employee assessment. Correct answers are included in the static site data so feedback can work without a server. The result is not a competency certificate.
 
@@ -30,6 +40,7 @@ The website is generated from the same sources as the repository guide:
 | Questions, path metadata, and prerequisite rules | [Assessment script](../scripts/assess.py) |
 | Browser recommendation rules | [Browser assessment](../web/assessment.js) |
 | Guides, practice briefs, and teaching material | Markdown files in this directory |
+| Local saving, validation, and recovery | [Progress storage](../web/progress.js) |
 | Visual design and browser interactions | Files in `web/` |
 
 When changing assessment rules, update both implementations and the [interview guide](ASSESSMENT.md). Automated tests compare the browser and Python recommendations for every combination of topic scores and relevant-work evidence. Generated content and internal section links are checked as well.

@@ -1,0 +1,11 @@
+{
+  "name": "industrial-ai-field-guide",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "python3 scripts/build_site.py",
+    "test": "python3 -m unittest discover -s tests -v && python3 scripts/check_docs.py && python3 scripts/build_site.py && node --test tests/site.test.mjs",
+    "preview": "python3 -m http.server 4173 --bind 127.0.0.1 --directory _site"
+  },
+  "engines": {"node": ">=22"}
+}

@@ -62,19 +62,19 @@ Use four development cases and have a peer write four variations you do not tune
 
 Compare a constant predictor, a simple threshold, and a small classifier. Explain what the split estimates: new assets, future observations, or both. Do not randomly split overlapping windows across train/test. Never include a feature calculated from the future fault label. Intentionally try a leaky split as a teaching comparison and explain why its score is misleading.
 
-**Deliver:** data-generation code, split rationale, pipeline, confusion matrix, rare-fault recall and false-alarm discussion, and failure examples. Synthetic performance demonstrates the method only; it cannot establish predictive maintenance performance on Festo assets. Forecasting learners can substitute a persistence baseline and a chronological forecasting task using [R07](CATALOG.md#r07).
+**Deliver:** data-generation code, split rationale, pipeline, confusion matrix, rare-fault recall and false-alarm discussion, and failure examples. Synthetic performance demonstrates the method only; it cannot establish predictive maintenance performance on Festo assets. Forecasting learners can substitute a persistence baseline and a chronological forecasting task using [R07](CATALOG.md#r07). D4 then repeats the split protocol on one public [R22](CATALOG.md#r22) run-to-failure set; report how few independent units it contains.
 
 ## B4 Embedded reflex
 
 **Used by D1.** Classify short synthetic normal/disturbed vibration windows. Define sample rate, window length, preprocessing, labels, and a split by recording. Compare a threshold on a simple signal feature with a small model. Convert/quantize the model and compare outputs on identical held-out windows.
 
-Use [C28](CATALOG.md#c28) for the workflow and [R11](CATALOG.md#r11) for a supported runtime. Agree a resource budget for your actual target before deployment. Record model size, peak runtime RAM including buffers, and latency distribution measured on representative inputs. State whether energy was measured; do not infer it from file size.
+Use [C28](CATALOG.md#c28) for the workflow and [R11](CATALOG.md#r11) for a supported runtime; its `hello_world` test compares converted and original outputs on a development computer. Agree a resource budget for your actual target before deployment. Record model size, peak runtime RAM including buffers, and latency distribution measured on representative inputs. State whether energy was measured; do not infer it from file size.
 
 **Without a board:** produce the model/conversion comparison and a resource-budget worksheet. Mark RAM, timing, and power on target as **not measured**. Desktop or emulator measurements must be labelled with their environment. **Deliver:** preprocessing contract, baseline comparison, conversion error analysis, and target/simulation report.
 
 ## B5 Edge perception pipeline
 
-**Used by D2.** Replay a small public or self-created set of inspection images through a local classifier. Include normal images, defects, and an unknown-input category. Separate assets/scenes across development and evaluation sets. Measure acquisition/replay, preprocessing, queueing, inference, and output handling together.
+**Used by D2.** Replay a small public or self-created set of inspection images through a local classifier. Include normal images, defects, and an unknown-input category. Separate assets/scenes across development and evaluation sets. Measure acquisition/replay, preprocessing, queueing, inference, and output handling together, reporting percentiles per stage. [R20](CATALOG.md#r20) provides a local runtime with profiling; [R19](CATALOG.md#r19) explains the latency breakdown.
 
 Add a bounded input queue, an explicit stale-data policy, a versioned model/configuration, and local logs. Demonstrate a network outage, a process restart, and rollback to the preceding model. Define when data is dropped or buffered, and show that repeated processing does not produce duplicate decisions.
 
@@ -111,6 +111,6 @@ The following are **invented exercise values, not FEA results**:
 | E1 | 6–24 V | 5 V / 0.50 A | IN, GND, OUT / P3 | Thermal curve |
 | E2 | 8–36 V | 5 V / 0.25 A | GND, IN, OUT / P3 | Thermal curve |
 
-**Worked review:** E1 does not cover the required input range. E2's pin order differs and thermal suitability is unproven, so it is not a validated drop-in replacement. A model's confident recommendation does not resolve those gaps. Ask it for a comparison with explicit unknowns, then check manually.
+**Worked review:** E1 does not cover the required input range. E2's pin order differs and thermal suitability is unproven, so it is not a validated drop-in replacement. If the regulator is linear, worst-case dissipation is (30 V − 5 V) × 0.20 A = 5 W ([C40](CATALOG.md#c40)), so the missing thermal curve is decisive, not a detail. A model's confident recommendation does not resolve those gaps. Ask it for a comparison with explicit unknowns, then check manually.
 
 **Deliver:** requirements-to-evidence table, pinout/units check, missing-data requests, and a simulation/ERC/DRC plan. These invented sheets are sufficient for an account-free exercise; use actual public datasheets only for a subsequent supervised electronics task. Never represent this exercise as a build-ready circuit.

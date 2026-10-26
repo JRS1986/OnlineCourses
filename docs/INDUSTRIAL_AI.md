@@ -16,7 +16,7 @@ This is our teaching model: **reflexes → local perception and coordination →
 
 The categories overlap. Embedded AI is often a subset of edge deployment; some edge systems run on embedded hardware. Agentic AI can execute locally, on an edge server, or in the cloud. Cloud training does not make a deployed microcontroller model a cloud inference system. A fixed inference pipeline need not be agentic.
 
-Technical starting points: [TFLite Micro](https://github.com/tensorflow/tflite-micro) for constrained inference, [NVIDIA's edge tutorials](https://developer.nvidia.com/embedded/learn/tutorials) for richer local compute, and [agent workflow patterns](CATALOG.md#r01) for orchestration.
+Technical starting points: [LiteRT for Microcontrollers](CATALOG.md#r11) for constrained inference, [ONNX Runtime](CATALOG.md#r20) and the [Machine Learning Systems](CATALOG.md#r19) text for local inference and measurement, and [agent workflow patterns](CATALOG.md#r01) for orchestration.
 
 ## One example across all three roles
 

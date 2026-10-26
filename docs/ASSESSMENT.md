@@ -56,7 +56,7 @@ Apply the following rules in order; the [implementation](../scripts/assess.py) u
 
 **Recommendation format:** destination; reasons; ordered prerequisite blocks; 1–3 starting resources with scope; first study session; estimated total and what fits now; exit check; optional skips; tool/access limitations; date to revisit after a practice milestone.
 
-**Examples:** a CAD engineer can go directly to W2 with design checks, without programming study. A Python newcomer aiming for D3 starts with P1. A capable developer missing loop/evaluation knowledge goes to D3 and emphasizes C11/C16. An embedded developer with weak data-validation answers refreshes C06 before deployment. A lecturer rehearses the selected demo before using T1's teaching kit.
+**Examples:** a CAD engineer can go directly to W2 with design checks, without programming study. A Python newcomer aiming for D3 starts with P1. A capable developer missing loop/evaluation knowledge goes to D3 and emphasizes C11, C44, and R17. An embedded developer with weak data-validation answers refreshes C06 before deployment. A lecturer rehearses the selected demo before using T1's teaching kit.
 
 ## Prompt for a guided interview
 

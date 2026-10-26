@@ -4,7 +4,7 @@
 
 A curated learning guide for colleagues at Festo, engineering teams, and university learners. Start with **AI at work** to improve daily engineering and knowledge work, or **Developing AI** to build intelligence into products and industrial systems. This is a personal collection for sharing, not an official Festo curriculum or an approved-tool list.
 
-**Research review: 24 October 2026.** Free learning materials are preferred; paid labs, certificates, compute, and uncertain access are labelled separately. See the [course catalogue](docs/CATALOG.md) and [research and original-link audit](docs/RESEARCH.md).
+**Curriculum review: 26 October 2026.** Resources are chosen for authority (universities, public programmes such as KI-Campus, the primary tool vendor), checkable positive reception, and genuinely free access; every path has an open route. Paid labs, certificates, compute, and uncertain access are labelled separately. See the [course catalogue](docs/CATALOG.md) and [research and original-link audit](docs/RESEARCH.md).
 
 ## Start here
 

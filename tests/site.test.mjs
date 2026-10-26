@@ -10,7 +10,7 @@ const md = createMarkdown(data);
 
 test('generated content includes all paths, resources, and exactly two questions per domain', () => {
   assert.equal(data.paths.length,11);
-  assert.equal(data.courses.length,45);
+  assert.equal(data.courses.length,76);
   assert.equal(data.questions.length,20);
   const resources = new Set(data.courses.map(c=>c.id));
   assert.equal(resources.size,data.courses.length);

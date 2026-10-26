@@ -94,24 +94,24 @@ class Path:
 
 PATHS = {
     "P0": Path("AI orientation", "p0-ai-orientation", 4, ("use",), ("C01", "R01"), "Define one task and a non-AI baseline."),
-    "P1": Path("Programming foundations", "p1-programming-foundations", 24, ("use", "python", "engineering"), ("C02", "C04"), "Write a small input/output contract; start Python functions and exceptions."),
-    "W1": Path("Knowledge work and copilots", "w1-knowledge-work-and-copilots", 6, ("use",), ("C33", "R12"), "Summarize a public technical source and verify every claim."),
-    "W2": Path("CAD and mechanical design", "w2-cad-and-mechanical-design", 8, ("use", "cad"), ("C31",), "Write the loads, constraints, and verification criteria for a fictional bracket."),
-    "W3": Path("Electronics and PCB design", "w3-electronics-and-pcb-design", 8, ("use", "electronics"), ("C32", "R10"), "Compare two public component datasheets against explicit requirements."),
-    "W4": Path("Agentic coding", "w4-agentic-coding", 16, ("use", "python", "engineering", "loops"), ("C12", "R03", "R04"), "Choose a small bug, reproduce it, and define acceptance tests."),
-    "D1": Path("Embedded AI", "d1-embedded-ai", 24, ("use", "python", "data", "embedded"), ("C28", "R11"), "Specify signal windows, split strategy, and device resource budgets."),
-    "D2": Path("Edge AI", "d2-edge-ai", 24, ("use", "python", "data", "edge"), ("C29", "C18"), "Draw acquisition-to-output flow and define disconnected behavior."),
-    "D3": Path("Agentic AI and loops", "d3-agentic-ai-and-loops", 24, ("use", "python", "engineering", "loops", "evaluation"), ("C11", "C14", "C16"), "Define a fixed-workflow baseline and a bounded tool contract."),
-    "D4": Path("Industrial data and ML", "d4-industrial-data-and-ml", 24, ("use", "python", "data"), ("C06", "C07"), "Define the prediction task, data split, and a simple baseline."),
-    "T1": Path("Teaching and facilitation", "t1-teaching-and-facilitation", 6, ("use", "loops"), ("C01", "R02"), "Choose one audience and rehearse the workshop's paper-based example."),
+    "P1": Path("Programming foundations", "p1-programming-foundations", 24, ("use", "python", "engineering"), ("C02", "C04", "R13"), "Start C02 week 0; write B1's input/output contract and one failing test before any implementation."),
+    "W1": Path("Knowledge work and copilots", "w1-knowledge-work-and-copilots", 6, ("use",), ("C38", "R12"), "Summarize a public technical source and verify every claim."),
+    "W2": Path("CAD and mechanical design", "w2-cad-and-mechanical-design", 8, ("use", "cad"), ("C31", "R15"), "Write the loads, constraints, and verification criteria for a fictional bracket."),
+    "W3": Path("Electronics and PCB design", "w3-electronics-and-pcb-design", 8, ("use", "electronics"), ("R16", "C40"), "Write B8's requirements table and estimate worst-case regulator dissipation before asking an assistant."),
+    "W4": Path("Agentic coding", "w4-agentic-coding", 16, ("use", "python", "engineering", "loops"), ("C04", "C43", "C42", "R18"), "Choose a small bug, reproduce it, define acceptance tests, and list the files the assistant may edit."),
+    "D1": Path("Embedded AI", "d1-embedded-ai", 24, ("use", "python", "data", "embedded"), ("C28", "R11", "R19"), "Specify signal windows, a split by recording, and a RAM/flash/latency budget; run the TFLM hello_world test on your computer."),
+    "D2": Path("Edge AI", "d2-edge-ai", 24, ("use", "python", "data", "edge"), ("R19", "R20", "C18"), "Draw acquisition-to-output flow with a latency budget per stage and define disconnected behavior."),
+    "D3": Path("Agentic AI and loops", "d3-agentic-ai-and-loops", 24, ("use", "python", "engineering", "loops", "evaluation"), ("C11", "C44", "R17", "R09"), "Define a fixed-workflow baseline and a bounded tool contract."),
+    "D4": Path("Industrial data and ML", "d4-industrial-data-and-ml", 24, ("use", "python", "data"), ("C06", "C07", "R21", "R22"), "Decide whether the model must generalize to new assets or future time, define that split, and set a constant and threshold baseline."),
+    "T1": Path("Teaching and facilitation", "t1-teaching-and-facilitation", 6, ("use", "loops"), ("C54", "R23"), "Choose one audience, rehearse B6 on paper, and write one diagnostic question."),
 }
 
 REFRESHERS = {
-    "use": ("C01", "R12"), "python": ("C02", "C03"),
-    "engineering": ("C04", "R03"), "data": ("C06", "C07"),
-    "loops": ("C11", "R02"), "evaluation": ("C16", "R05"),
-    "embedded": ("C28", "R11"), "edge": ("C29", "C18"),
-    "cad": ("C31",), "electronics": ("C32", "R10"),
+    "use": ("C38", "R12"), "python": ("C02", "C03"),
+    "engineering": ("C04", "R13"), "data": ("C07", "R21"),
+    "loops": ("R01", "R02"), "evaluation": ("R17", "C44"),
+    "embedded": ("C28", "R11"), "edge": ("R19", "R20"),
+    "cad": ("C31", "R15"), "electronics": ("R16", "C40"),
 }
 
 
@@ -222,7 +222,7 @@ def render_plan(goal, scores, evidence, hours, weeks, live=False, language="Engl
     if goal == "D2":
         lines.append("Edge gate: Linux, packaging/container basics, and target access are required for deployment. Rehearse locally first; desktop timing is not target timing.")
     if language == "German":
-        lines.append("Language: discuss/write reflections in German; C01 has a German edition. Most technical materials here are English; allow translation time.")
+        lines.append("Language: discuss/write reflections in German; C01 has a German edition and C34 is a German-original alternative. Most technical materials here are English; allow translation time.")
     lines.append("No answers were saved or sent. This is a learning aid, not an employee rating.")
     return "\n".join(lines)
 

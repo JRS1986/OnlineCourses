@@ -24,6 +24,8 @@ DESCRIPTIONS = {
     'D4': 'Make reliable predictions from industrial data.',
     'T1': 'Turn a learning path into a team session or lecture.',
 }
+# Resources that are neither a course nor a reading; everything else follows its C/R prefix.
+TYPES = {'C28': 'Courseware', 'C29': 'Tutorial', 'C37': 'Video series', 'C51': 'Courseware', 'R22': 'Dataset'}
 
 
 def extract_data():
@@ -48,7 +50,7 @@ def extract_data():
         if identifier == 'C13':
             label = 'Access varies'
         courses.append({'id': identifier, 'title': resource[1], 'url': resource[2], 'provider': provider,
-                        'category': category, 'type': 'Reading' if reading else 'Tutorial hub' if identifier == 'C29' else 'Courseware' if identifier == 'C28' else 'Course',
+                        'category': category, 'type': TYPES.get(identifier, 'Reading' if reading else 'Course'),
                         'prerequisites': '' if reading else cells[1], 'scope': cells[1] if reading else cells[2],
                         'access': access, 'accessLabel': label})
     source = (ROOT / 'docs/LEARNING_PATHS.md').read_text()
@@ -83,7 +85,7 @@ def extract_data():
     for path in paths:
         if not set(path['allResources']).issubset(ids):
             raise ValueError('Unknown resource in ' + path['id'])
-    return {'schemaVersion': 1, 'reviewed': '2026-10-24', 'repository': 'https://github.com/JRS1986/OnlineCourses',
+    return {'schemaVersion': 1, 'reviewed': '2026-10-26', 'repository': 'https://github.com/JRS1986/OnlineCourses',
             'paths': paths, 'courses': courses, 'questions': [asdict(q) for q in QUESTIONS],
             'refreshers': REFRESHERS, 'guides': docs}
 

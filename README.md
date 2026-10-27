@@ -4,7 +4,7 @@
 
 A curated learning guide for colleagues at Festo, engineering teams, and university learners. Start with **AI at work** to improve daily engineering and knowledge work, or **Developing AI** to build intelligence into products and industrial systems. This is a personal collection for sharing, not an official Festo curriculum or an approved-tool list.
 
-**Curriculum review: 26 October 2026.** Resources are chosen for authority (universities, public programmes such as KI-Campus, the primary tool vendor), checkable positive reception, and genuinely free access; every path has an open route. Paid labs, certificates, compute, and uncertain access are labelled separately. See the [course catalogue](docs/CATALOG.md) and [research and original-link audit](docs/RESEARCH.md).
+**Curriculum review: 26 October 2026.** Resources are chosen for authority (universities, public programmes such as KI-Campus, the primary tool vendor), checkable positive reception, and genuinely free access; every path has an open route. Paid labs, certificates, compute, and uncertain access are labelled separately. The AI security path (D5) was added on 27 October 2026. See the [course catalogue](docs/CATALOG.md) and [research and original-link audit](docs/RESEARCH.md).
 
 ## Start here
 
@@ -49,6 +49,7 @@ You do not need to become an ML engineer to use these paths. Existing domain kno
 | Build **local perception and coordination** | [D2 — Edge AI](docs/LEARNING_PATHS.md#d2-edge-ai) | 24 h | A local inference pipeline and outage/restart checks |
 | Build **planning and tool use** | [D3 — Agentic AI and loops](docs/LEARNING_PATHS.md#d3-agentic-ai-and-loops) | 24 h | An evaluated assistant with bounded tool access |
 | Build a trustworthy data/ML baseline | [D4 — Industrial data and ML](docs/LEARNING_PATHS.md#d4-industrial-data-and-ml) | 24 h | A leakage-aware baseline and error analysis |
+| Attack, harden, and retest AI applications | [D5 — AI security](docs/LEARNING_PATHS.md#d5-ai-security) | 24 h | A threat model, attack log, and host-enforced fixes |
 | Teach the map and a practical example | [T1 — Teaching and facilitation](docs/LEARNING_PATHS.md#t1-teaching-and-facilitation) | 6 h preparation | A worked example, exercise, and rubric |
 
 *Repository planning estimates for selected material and practice, not full-course durations or completion promises. Prerequisite study is additional. Beginners may need substantially longer; use the milestone checks to decide when to move on.*

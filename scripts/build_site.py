@@ -22,10 +22,11 @@ DESCRIPTIONS = {
     'D2': 'Bring perception and coordination close to the machine.',
     'D3': 'Build systems that plan, use tools, and know when to stop.',
     'D4': 'Make reliable predictions from industrial data.',
+    'D5': 'Attack, harden, and retest AI applications and agents.',
     'T1': 'Turn a learning path into a team session or lecture.',
 }
 # Resources that are neither a course nor a reading; everything else follows its C/R prefix.
-TYPES = {'C28': 'Courseware', 'C29': 'Tutorial', 'C37': 'Video series', 'C51': 'Courseware', 'R22': 'Dataset'}
+TYPES = {'C28': 'Courseware', 'C29': 'Tutorial', 'C37': 'Video series', 'C51': 'Courseware', 'C59': 'Video series', 'C61': 'Hands-on labs', 'C62': 'Game', 'R22': 'Dataset'}
 
 
 def extract_data():

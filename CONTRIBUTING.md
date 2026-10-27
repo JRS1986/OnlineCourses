@@ -40,6 +40,6 @@ These checks validate recommendation behavior and local documentation references
 
 ## Review cadence
 
-Proposed maintenance cadence: review fast-changing agent/tool resources monthly and foundations every six months; also react to reports of broken access. From the 2026-10-26 curriculum review, the next suggested dates are **2026-11-26** for agent/tool material (including DeepLearning.AI's limited-time free access and R05 after the OpenAI Evals shutdown) and **2027-04-26** for foundations. Replace the C36 URL when the 2027 Helsinki edition opens. These are maintenance suggestions; no recurring job or reminder is configured.
+Proposed maintenance cadence: review fast-changing agent/tool resources monthly and foundations every six months; also react to reports of broken access. From the 2026-10-26 curriculum review, the next suggested dates are **2026-11-26** for agent/tool material (including DeepLearning.AI's limited-time free access, R05 after the OpenAI Evals shutdown, and TryHackMe room access and the OWASP landing page for D5) and **2027-04-26** for foundations. Replace the C36 URL when the 2027 Helsinki edition opens. These are maintenance suggestions; no recurring job or reminder is configured.
 
 Keep `RESEARCH.md` evidence current and change the catalogue date only after reviewing its entries. Use original summaries and local exercises; external course licences still govern copying. Do not add an overarching licence for third-party content. Share internal examples only in locations appropriate for that material.

@@ -5,7 +5,7 @@ The [Industrial AI field guide](https://jrs1986.github.io/OnlineCourses/) runs i
 ## What learners can do
 
 - Explore the three Industrial AI roles in an interactive, zoomable diagram.
-- Browse 11 learning paths and search/filter 76 courses and references.
+- Browse 12 learning paths and search/filter 84 courses and references.
 - Choose a goal, available time, practice access, and discussion language; answer relevant knowledge checks.
 - Receive an explained learning sequence with prerequisites, resource suggestions, and exit checks.
 - Use **Continue learning** on the home, plan, progress, or path page to jump to the next unfinished study block.

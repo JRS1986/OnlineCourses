@@ -16,7 +16,7 @@ For AI at work, use an assistant already permitted in your environment. For deve
 | 2 | The [brain analogy](INDUSTRIAL_AI.md#the-brain-analogy) and the "What are agents?" and "When (and when not) to use agents" sections of [R01](CATALOG.md#r01); place one example from your own work in each role | 1 |
 | 3 | Write a one-page use-case brief: input, output, non-AI baseline, owner, acceptance check, and whether you would use or build the AI | 1 |
 
-**Exit:** explain the distinction between using and building AI; place one example in each brain role; identify a task better served by a normal script or lookup. Choose W1–W4 for daily work or D1–D4 for development.
+**Exit:** explain the distinction between using and building AI; place one example in each brain role; identify a task better served by a normal script or lookup. Choose W1–W4 for daily work or D1–D5 for development.
 
 Optional, outside the four hours: finish C01 for its free certificate (2 ECTS are available for the English, Finnish, or Swedish edition); [C35](CATALOG.md#c35) for the EU AI Act's roles and risk classes; business context in [C56](CATALOG.md#c56) for scoping a pilot, [C55](CATALOG.md#c55) for technical handovers, and [C57](CATALOG.md#c57) for supply-chain context, with [C21–C24](CATALOG.md#c21) as platform alternatives. None of these replaces an organisation's own AI-literacy or compliance measures.
 
@@ -132,7 +132,7 @@ Optional depth, outside the 24 h: [C47](CATALOG.md#c47) quantization and MCUNet 
 | 1 | [C11](CATALOG.md#c11): Unit 1 (agent loop, messages, tools) and its first-agent exercise; [C10](CATALOG.md#c10) is an optional video alternative | 5 |
 | 2 | [C44](CATALOG.md#c44) Day 2: tool design, MCP risks, human approval before actions; draft the B2 tool descriptions and schemas. [C14](CATALOG.md#c14) Unit 1 is the open alternative for a dedicated MCP build | 3 |
 | 3 | [C44](CATALOG.md#c44) Day 4 or [C16](CATALOG.md#c16): traces and trajectory evaluation; [R17](CATALOG.md#r17): error analysis, pass/fail checks, judge validation. Write four development cases and ask a peer for four held-back variations | 4 |
-| 4 | [R09](CATALOG.md#r09) and the [C45](CATALOG.md#c45) *Agentic AI Safety & Security* lecture: threat-model M4, each tool, and the budget | 2 |
+| 4 | [R09](CATALOG.md#r09) and the [C45](CATALOG.md#c45) *Agentic AI Safety & Security* lecture: threat-model M4, each tool, and the budget; [D5](#d5-ai-security) goes further | 2 |
 | 5 | [B2 bounded maintenance assistant](PRACTICE.md#b2-bounded-maintenance-assistant): compare fixed workflow to agent | 8 |
 | 6 | Review stop conditions, tool failures, repeated-run variation, and held-out results | 2 |
 
@@ -154,7 +154,25 @@ Read [R02](CATALOG.md#r02) during the exercise. Distinguish a model's tool-use l
 
 **Exit:** compare a constant predictor, a threshold, and a model on a split justified by the deployment question (new assets, future observations, or both); report rare-fault recall and false alarms from a confusion matrix; show how far the leaky split inflated the score; and state where neither the synthetic nor the public result generalizes. C30 substitutes introductory material only; C07 uses Python. A public dataset shows that the method transfers, not how it performs on Festo assets, and a handful of run-to-failure units gives only a weak estimate.
 
-Optional depth, outside the 24 h: [C50](CATALOG.md#c50) for statistical-learning depth, [R07](CATALOG.md#r07) for forecasting baselines and time-series cross-validation, [C52](CATALOG.md#c52) for uncertainty ([C26](CATALOG.md#c26) is the Coursera alternative), [C53](CATALOG.md#c53) before reading observational data as evidence that an intervention worked ([C27](CATALOG.md#c27) is the Coursera alternative), and [C08](CATALOG.md#c08) for vision. Take D1/D2 when deployment becomes the goal.
+Optional depth, outside the 24 h: [C50](CATALOG.md#c50) for statistical-learning depth, [R07](CATALOG.md#r07) for forecasting baselines and time-series cross-validation, [C52](CATALOG.md#c52) for uncertainty ([C26](CATALOG.md#c26) is the Coursera alternative), [C53](CATALOG.md#c53) before reading observational data as evidence that an intervention worked ([C27](CATALOG.md#c27) is the Coursera alternative), and [C08](CATALOG.md#c08) for vision. Take D1/D2 when deployment becomes the goal, and D5 before exposing a model to untrusted input.
+
+## D5 AI security
+
+**For:** developers and security practitioners who build, deploy, or test AI applications and agents. **Prerequisites:** Python and HTTP basics; P1 exit check or equivalent. Building an agent in [D3](#d3-agentic-ai-and-loops) helps but is not required: B9 can attack a simulated B2 assistant. **Allocation:** 24 h. **Authorization:** practise only on the labs' own targets and on systems you own or are explicitly permitted to test.
+
+| Order | Study or practice | Hours |
+|---|---|---:|
+| 1 | [C60](CATALOG.md#c60): all three modules; read the [R09](CATALOG.md#r09) entries on prompt injection, improper output handling, excessive agency, and unbounded consumption. German speakers add [R27](CATALOG.md#r27) | 3 |
+| 2 | [C62](CATALOG.md#c62): play until a level stops you; for each level, write down the defence it added and why your bypass worked | 1 |
+| 3 | [C58](CATALOG.md#c58): every section and its seven labs, from excessive agency through indirect injection to agent exfiltration and defences. With a subscription, the Prompt Security and Data Poisoning modules of [C61](CATALOG.md#c61) are the paid alternative | 7 |
+| 4 | [C59](CATALOG.md#c59) episodes 3–7: indirect, single-turn, and multi-turn attacks and spotlighting; note which defences are deterministic and which are probabilistic | 3 |
+| 5 | [R25](CATALOG.md#r25) predictive-AI attack classes (evasion, poisoning, privacy) applied to one D1/D4-style model, then map the B9 threats to [R26](CATALOG.md#r26) techniques | 2 |
+| 6 | [B9 AI security review](PRACTICE.md#b9-ai-security-review): threat model, attack log, host-enforced hardening, retest on peer-written attacks | 7 |
+| 7 | Peer review of the attack log and a residual-risk handover to a named owner | 1 |
+
+**Exit:** a threat model with trust boundaries; a reproducible attack log; at least one control the host enforces (tool permission, argument schema, output sanitisation, or approval) with before/after results on held-out attacks; benign B2 cases that still pass; and a list of risks that remain. Prompt wording and classifiers can reduce attack success but do not count as the only control. "No successful attack observed" is not proof of security. No permitted model account: C58 and C62 run in the browser and B9 works with simulated traces; label those results as simulation.
+
+Optional, outside the 24 h: the [C59](CATALOG.md#c59) PyRIT episodes and Playground Labs for automated red teaming (own API key); the [OWASP Top 10 for Agentic Applications](CATALOG.md#r09) for multi-agent systems; and BSI's LLM hardening checklist linked from [R27](CATALOG.md#r27). This path teaches testing methods; it is not a penetration-test qualification or a substitute for an organisation's security review.
 
 ## T1 Teaching and facilitation
 

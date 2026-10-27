@@ -2,7 +2,7 @@
 
 [Start](../README.md) · [Catalogue](CATALOG.md) · [Reference-list comparison](RESOURCES.md)
 
-**Review dates: 2026-10-24 (initial audit) and 2026-10-26 ([curriculum review](#curriculum-review-2026-10-26)), Europe/Berlin.** Starting point: the repository's original README at commit `16af649`, containing **53 external links, 42 of them on Coursera**. Every original URL appears below with a disposition. Summaries are original editorial notes; source content was not imported as a competing course inventory.
+**Review dates: 2026-10-24 (initial audit), 2026-10-26 ([curriculum review](#curriculum-review-2026-10-26)), and 2026-10-27 ([AI security addition](#ai-security-addition-2026-10-27)), Europe/Berlin.** Starting point: the repository's original README at commit `16af649`, containing **53 external links, 42 of them on Coursera**. Every original URL appears below with a disposition. Summaries are original editorial notes; source content was not imported as a competing course inventory.
 
 ## What changed and why
 
@@ -105,6 +105,22 @@
 | Coursera business electives are not free | FAQs of [C21](https://www.coursera.org/specializations/supply-chain-management), [C22](https://www.coursera.org/specializations/project-management), [C23](https://www.coursera.org/specializations/effective-business-communication); [C24](https://www.coursera.org/learn/bcg-uva-darden-digital-transformation) | C21–C23 state they cannot be taken for free; C24 free access unconfirmed; all stay optional |
 | Offer open or free-track routes for business context | [Technical Writing One](https://developers.google.com/tech-writing/one), [facilitator guide](https://developers.google.com/tech-writing/for-instructors/one/instructors-guide), [OpenLearn project management](https://www.open.edu/openlearn/money-business/leadership-management/project-management-the-start-the-project-journey), [MITx SC1x](https://learn.mit.edu/courses/course-v1:MITxT+CTL.SC1x), [MIT SCM programme](https://micromasters.mit.edu/scm/) | C55 and C56 open; C57 free materials with paid graded work; C56 is a 2016 edition; no open digital-transformation equivalent verified |
 | Considered, not added | [UNESCO teacher framework](https://www.unesco.org/en/articles/ai-competency-framework-teachers), [Generative AI for Educators](https://grow.google/ai-for-educators/), [Learning How to Learn](https://www.coursera.org/learn/learning-how-to-learn), [DigComp 2.2](https://publications.jrc.ec.europa.eu/repository/handle/JRC128415), [PMI KICKOFF](https://www.pmi.org/kickoff) (403) | School or policy focus, learner rather than facilitator focus, or free access unconfirmed |
+
+## AI security addition, 2026-10-27
+
+**Method.** A learner suggested AI security after following TryHackMe's AI Security path. One research pass checked candidate resources on primary provider pages; key claims (PortSwigger access, Microsoft Learn contents, NIST status, the OWASP 2026 edition, BSI publications, TryHackMe structure) were then re-fetched. Nothing was enrolled in, completed, or run, and no lab was attempted. The same ranking applies: authority, checkable reception, and genuinely free material and practice.
+
+| Decision | Primary evidence inspected | Editorial implication |
+|---|---|---|
+| Add D5 AI security with PortSwigger as the hands-on core | [Web LLM attacks learning path](https://portswigger.net/web-security/learning-paths/llm-attacks), [Web Security Academy](https://portswigger.net/web-security) ("100% free") | Seven free labs covering excessive agency, LLM API flaws, indirect injection, and agent exfiltration; no ratings published |
+| Include TryHackMe as the paid alternative, not the core | [AI Security path](https://tryhackme.com/path/outline/aisecurity), individual room pages, [pricing](https://tryhackme.com/pricing) | 5 modules, 25 rooms, 19 h 15 min; core prompt-injection and RAG rooms marked Premium/Max on 2026-10-27; introductory rooms open |
+| Use Microsoft Learn for concepts and red-teaming method | [AI security fundamentals](https://learn.microsoft.com/en-us/training/paths/ai-security-fundamentals/), [AI Red Teaming 101](https://learn.microsoft.com/en-us/security/ai-red-team/training), [Playground Labs](https://github.com/microsoft/AI-Red-Teaming-Playground-Labs), [PyRIT](https://github.com/microsoft/PyRIT) | Free modules and videos; the labs and PyRIT need a model API key, so they are optional runtime extras |
+| Add a browser game as a first attack exercise | [Gandalf](https://gandalf.lakera.ai/) (redirects to play.lakera.ai) | Free; page content and login requirements not rendered; reception figures only in press reports |
+| Cover attacks on predictive models and attacker behaviour | [NIST AI 100-2 E2025](https://csrc.nist.gov/pubs/ai/100/2/e2025/final), [MITRE ATLAS](https://atlas.mitre.org/) | NIST final March 2025 with errata note, no newer draft; ATLAS site needs JavaScript and was not rendered |
+| Update R09 for the 2026 OWASP edition | [OWASP LLM Top 10 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/), [landing page](https://genai.owasp.org/llm-top-10/) | 2026 v1.0 published August 2026; the landing page still lists 2025 numbering, so paths cite risks by name |
+| Add a German official source | [BSI AI page](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Informationen-und-Empfehlungen/Kuenstliche-Intelligenz/KI.html) | Basisschutz gegen Indirect Prompt Injection (2026) plus LLM hardening guidance; no German AI-security course found, KI-Campus included |
+
+**Not catalogued.** DeepLearning.AI *Red Teaming LLM Applications* (free only during a limited-time beta; quiz and certificate need PRO), Dreadnode Crucible (former address redirects to a login without visible Crucible content), HackAPrompt / Learn Prompting (free tier not confirmed on the primary page), and university ML-security courses without public recordings. Recheck at the next agent/tool review.
 
 ## Verification limits
 

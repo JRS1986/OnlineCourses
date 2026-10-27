@@ -47,4 +47,4 @@ Generative design includes constraint-driven optimization and is broader than LL
 
 Start with the work and evidence, then choose technology. A threshold, ordinary script, lookup table, or optimizer is a legitimate baseline. If a constrained device meets the requirement, an LLM is not a prerequisite. If the task needs a document draft, model training is not a prerequisite either.
 
-Move from W4 to D3 when you need to build and evaluate an agent, rather than only use a coding assistant. Move from D4 to D1/D2 when a model needs to run near the physical process. Move between paths when your goal changes; no one needs to complete the whole catalogue.
+Move from W4 to D3 when you need to build and evaluate an agent, rather than only use a coding assistant. Move from D4 to D1/D2 when a model needs to run near the physical process. Take D5 before an assistant or agent reads untrusted documents or gets tools that act. Move between paths when your goal changes; no one needs to complete the whole catalogue.

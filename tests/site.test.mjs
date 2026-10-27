@@ -9,9 +9,9 @@ const data = JSON.parse(readFileSync(new URL('../_site/data.json', import.meta.u
 const md = createMarkdown(data);
 
 test('generated content includes all paths, resources, and exactly two questions per domain', () => {
-  assert.equal(data.paths.length,11);
-  assert.equal(data.courses.length,76);
-  assert.equal(data.questions.length,20);
+  assert.equal(data.paths.length,12);
+  assert.equal(data.courses.length,84);
+  assert.equal(data.questions.length,22);
   const resources = new Set(data.courses.map(c=>c.id));
   assert.equal(resources.size,data.courses.length);
   for (const path of data.paths) {

@@ -52,7 +52,7 @@ class AssessmentTests(unittest.TestCase):
         self.assertEqual([b[0] for b in assess.recommend("P1", scores_for("P1", 0))], ["P1"])
 
     def test_developer_python_gap_precedes_destination(self):
-        for goal in ("W4", "D1", "D2", "D3", "D4"):
+        for goal in ("W4", "D1", "D2", "D3", "D4", "D5"):
             with self.subTest(goal=goal):
                 blocks = assess.recommend(goal, scores_for(goal, 0), evidence=True)
                 self.assertEqual(blocks[0][0], "P1")
@@ -70,7 +70,7 @@ class AssessmentTests(unittest.TestCase):
         self.assertEqual([b[0] for b in blocks], ["C04", "practice", "D3"])
 
     def test_practice_gate_for_quiz_only_knowledge(self):
-        for goal in ("W4", "D1", "D2", "D3", "D4"):
+        for goal in ("W4", "D1", "D2", "D3", "D4", "D5"):
             with self.subTest(goal=goal):
                 self.assertEqual(assess.recommend(goal, scores_for(goal, 2))[0][0], "practice")
 
